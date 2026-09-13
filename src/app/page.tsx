@@ -20,8 +20,11 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-zinc-600">
             <Link href="/booking" className="hover:text-zinc-900 font-medium">Booking</Link>
+            <Link href="/dashboard" className="hover:text-zinc-900 font-medium">Dashboard Saya</Link>
             <Link href="/display" className="hover:text-zinc-900 font-medium">Display TV</Link>
-            <Link href="/admin-capil-loket" className="text-zinc-400 hover:text-zinc-600 text-xs">Akses Petugas</Link>
+            <Link href="/login" className="text-blue-600 font-semibold hover:underline">Masuk</Link>
+            <Link href="/register" className="bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full font-semibold hover:bg-blue-100">Daftar Akun</Link>
+            <Link href="/admin-capil-loket" className="text-zinc-400 hover:text-zinc-600 text-xs">Petugas</Link>
           </div>
           <Link href="/booking" className="bg-zinc-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-black">Ambil Antrean</Link>
         </div>
@@ -36,8 +39,9 @@ export default function Home() {
           </h1>
           <p className="mt-4 text-zinc-600 leading-relaxed max-w-xl">Booking antrean online untuk KTP, KK, KIA, Pindah & Akta. Dapatkan nomor antrean, tiket digital + QR, dan notifikasi email — datang sesuai jadwal.</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/booking" className="bg-blue-600 text-white px-7 py-3.5 rounded-full font-semibold hover:bg-blue-700">Booking Sekarang →</Link>
-            <Link href="/display" className="bg-zinc-100 px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200">Lihat Display TV</Link>
+            <Link href="/register" className="bg-blue-600 text-white px-7 py-3.5 rounded-full font-semibold hover:bg-blue-700 shadow-lg shadow-blue-500/20">Daftar / Login Akun Warga →</Link>
+            <Link href="/booking" className="bg-zinc-100 px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200">Langsung Booking</Link>
+            <Link href="/dashboard" className="bg-zinc-100 px-7 py-3.5 rounded-full font-semibold hover:bg-zinc-200">Pantau Progres Antrean</Link>
           </div>
           <div className="mt-6 flex items-center gap-6 text-sm text-zinc-500">
             <span>✔ Kuota harian 80/or layanan</span><span>✔ QR Tiket</span><span>✔ Email otomatis</span>

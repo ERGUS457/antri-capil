@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Edge-safe: cek cookie session tanpa import prisma/bcrypt
+// Booking, Dashboard, Admin wajib login.
+// Booking: warga harus daftar/login dulu → data tersimpan, mudah dipantau.
 export function middleware(req: NextRequest) {
-  const url = req.nextUrl.clone();
-  const needsAuth = url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/admin");
+  const url = req.nextUrl;
+  const pathname = url.pathname;
+  const needsAuth =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/booking");
+
   if (!needsAuth) return NextResponse.next();
 
   const token =
@@ -14,11 +20,14 @@ export function middleware(req: NextRequest) {
     "";
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    // simpan tujuan biar balik ke /booking setelah login
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*"],
+  matcher: ["/admin/:path*", "/dashboard/:path*", "/booking"],
 };

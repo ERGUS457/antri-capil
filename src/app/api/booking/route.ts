@@ -7,13 +7,15 @@ import { generateQR } from "@/lib/qr";
 export async function POST(req: Request) {
   try {
     const session = await auth();
+    const userId = (session?.user as any)?.id as string | undefined;
+    if (!userId) {
+      return NextResponse.json({ error: "Wajib login dulu. Silakan daftar atau masuk akun warga." }, { status: 401 });
+    }
+
     const body = await req.json();
     const { layananKode, tanggal } = body as {
       layananKode?: string;
       tanggal?: string;
-      nik?: string;
-      nama?: string;
-      email?: string;
     };
 
     if (!layananKode || !tanggal) {
@@ -26,35 +28,11 @@ export async function POST(req: Request) {
     const tgl = new Date(tanggal);
     if (isNaN(tgl.getTime())) return NextResponse.json({ error: "Format tanggal tidak valid" }, { status: 400 });
     tgl.setUTCHours(0, 0, 0, 0);
-    // tanggal tidak boleh kemarin
     const today = new Date(); today.setUTCHours(0,0,0,0);
     if (tgl < today) return NextResponse.json({ error: "Tanggal tidak boleh di masa lalu" }, { status: 400 });
 
-    let userId: string | null = (session?.user as any)?.id || null;
-    let wargaId: string | null = null;
-    let targetEmail: string | null = null;
-    let targetNama: string | null = null;
-
-    if (userId) {
-      const u = await prisma.user.findUnique({ where: { id: userId } });
-      if (!u) return NextResponse.json({ error: "User tidak ditemukan" }, { status: 404 });
-      targetEmail = u.email;
-      targetNama = u.name;
-    } else {
-      const { nik, nama, email } = body as { nik?: string; nama?: string; email?: string };
-      if (!nik || !nama) return NextResponse.json({ error: "Untuk booking tanpa login, NIK & Nama wajib diisi. Silakan login dulu." }, { status: 400 });
-      if (nik.length !== 16 || !/^\d+$/.test(nik)) return NextResponse.json({ error: "NIK harus 16 digit angka" }, { status: 400 });
-      if (email && !email.includes("@")) return NextResponse.json({ error: "Format email tidak valid" }, { status: 400 });
-      let warga = await prisma.warga.findUnique({ where: { nik } });
-      if (!warga) {
-        warga = await prisma.warga.create({ data: { nik, nama, email: email || null } });
-      } else if (warga.nama !== nama || warga.email !== (email || null)) {
-        warga = await prisma.warga.update({ where: { id: warga.id }, data: { nama, email: email || null } });
-      }
-      wargaId = warga.id;
-      targetEmail = email || warga.email;
-      targetNama = nama;
-    }
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return NextResponse.json({ error: "Akun tidak ditemukan, silakan login ulang" }, { status: 404 });
 
     // Kuota
     let kuota = await prisma.kuotaHarian.findUnique({
@@ -82,15 +60,16 @@ export async function POST(req: Request) {
         tanggal: tgl,
         status: "MENUNGGU",
         layananId: layanan.id,
-        wargaId,
-        userId,
+        userId: user.id,
+        wargaId: null,
       },
       include: { layanan: true },
     });
 
     await prisma.kuotaHarian.update({ where: { id: kuota.id }, data: { terisi: { increment: 1 } } });
 
-    // Kirim email via Resend (non-blocking, jangan gagalkan booking)
+    // Email via Resend (non-blocking)
+    const targetEmail = user.email;
     if (targetEmail) {
       const qrCode = await generateQR(`${process.env.NEXTAUTH_URL || "https://antri-capil.vercel.app"}/tiket/${antrean.id}`);
       sendBookingEmail(targetEmail, {
@@ -100,8 +79,6 @@ export async function POST(req: Request) {
         tanggal: tgl.toISOString().slice(0, 10),
         qrCode,
       }).catch((e) => console.error("[booking] email failed", e));
-    } else {
-      console.warn("[booking] no email, skip send", antrean.id);
     }
 
     return NextResponse.json({ id: antrean.id, nomor, emailSent: !!targetEmail }, { status: 201 });

@@ -18,7 +18,7 @@ function AdminContent() {
   const isAdmin = role === 'ADMIN';
 
   const [data, setData] = useState<Antrean[]>([]);
-  const [filter, setFilter] = useState({ tanggal: new Date().toISOString().slice(0, 10), status: 'MENUNGGU' });
+  const [filter, setFilter] = useState({ tanggal: new Date().toISOString().slice(0, 10), status: '' });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
 
@@ -26,7 +26,10 @@ function AdminContent() {
     if (!isAdmin) return;
     setErr('');
     try {
-      const res = await fetch(`/api/antrean?tanggal=${filter.tanggal}&status=${filter.status}`);
+      const qs = new URLSearchParams();
+      if (filter.tanggal) qs.set('tanggal', filter.tanggal);
+      if (filter.status) qs.set('status', filter.status);
+      const res = await fetch(`/api/antrean?${qs.toString()}`);
       const d = await res.json();
       if (!res.ok) setErr(d.error || 'Gagal memuat data');
       else setData(d.antrean || []);
@@ -105,7 +108,7 @@ function AdminContent() {
           </label>
           <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Status</span>
             <select value={filter.status} onChange={e => setFilter(s => ({ ...s, status: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:bg-white">
-              <option value="MENUNGGU">MENUNGGU</option><option value="DIPANGGIL">DIPANGGIL</option><option value="SELESAI">SELESAI</option><option value="LEWATI">LEWATI</option><option value="BATAL">BATAL</option>
+              <option value="">Semua Status</option><option value="MENUNGGU">MENUNGGU</option><option value="DIPANGGIL">DIPANGGIL</option><option value="SELESAI">SELESAI</option><option value="LEWATI">LEWATI</option><option value="BATAL">BATAL</option>
             </select>
           </label>
           <button onClick={fetchAntrean} className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700">Refresh</button>

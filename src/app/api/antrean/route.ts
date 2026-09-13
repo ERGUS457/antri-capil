@@ -41,7 +41,9 @@ export async function GET(req: Request) {
     if (tanggal) {
       const d = new Date(tanggal);
       d.setUTCHours(0, 0, 0, 0);
-      where.tanggal = d;
+      const d2 = new Date(d);
+      d2.setUTCDate(d2.getUTCDate() + 1);
+      where.tanggal = { gte: d, lt: d2 };
     }
     if (layananId) where.layananId = layananId;
     if (layananKode) {

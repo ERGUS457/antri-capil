@@ -35,7 +35,7 @@ export default function TiketPage() {
   return (
     <div className="min-h-screen bg-[#FFFBF0] py-10 px-6 print:bg-white">
       <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-center gap-2 mb-4 print:hidden"><img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-cover border border-orange-100 bg-white" /><span className="font-black text-sm">AntriCapil <span className="text-teal-600">Sambas</span></span></div>
+        <div className="flex items-center justify-center gap-2 mb-4 print:hidden"><img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-contain border border-orange-100 bg-white" /><span className="font-black text-sm">AntriCapil <span className="text-teal-600">Sambas</span></span></div>
         <div className="text-center mb-6 print:hidden">
           <p className="inline-block bg-green-100 text-green-700 text-sm font-bold px-4 py-1.5 rounded-full">✔ Booking Berhasil</p>
         </div>

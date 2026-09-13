@@ -30,7 +30,7 @@ export default function DisplayPage() {
     <div className="min-h-screen bg-zinc-900 text-white p-10 flex flex-col gap-10">
       <div className="flex justify-between items-center border-b border-white/10 pb-6">
         <div className="flex items-center gap-4">
-          <img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-14 h-14 rounded-2xl object-cover bg-white border border-white/20 shadow-sm" />
+          <img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-14 h-14 rounded-2xl object-contain bg-white border border-white/20 shadow-sm" />
           <div><h1 className="text-4xl font-black uppercase tracking-tighter">Antrean Online</h1><p className="text-zinc-500 font-bold uppercase tracking-widest text-sm">Disdukcapil Kab. Sambas</p></div>
         </div>
         <div className="text-right">

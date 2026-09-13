@@ -46,7 +46,7 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-[#FFFBF0] text-zinc-900">
       <div className="max-w-6xl mx-auto px-6 h-[64px] flex items-center justify-between border-b border-orange-100 bg-white/80 backdrop-blur sticky top-0 z-10">
-        <Link href="/" className="flex items-center gap-2 font-black"><img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-cover border border-orange-100 bg-white shadow-sm" /> AntriCapil</Link>
+        <Link href="/" className="flex items-center gap-2 font-black"><img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-contain border border-orange-100 bg-white shadow-sm" /> AntriCapil</Link>
         <Link href="/dashboard" className="text-sm font-bold text-teal-600 hover:underline">Riwayat Saya →</Link>
       </div>
       <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">

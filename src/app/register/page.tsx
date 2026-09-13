@@ -38,7 +38,7 @@ function RegisterForm() {
 
   return (
     <div className="bg-white rounded-[24px] border border-orange-100 p-8 max-w-md w-full shadow-sm">
-      <img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-11 h-11 rounded-xl object-cover border border-orange-100 bg-white shadow-sm" />
+      <img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-11 h-11 rounded-xl object-contain border border-orange-100 bg-white shadow-sm" />
       <h1 className="text-2xl font-black mt-4 tracking-tight text-zinc-900">Daftar Akun Warga</h1>
       <p className="text-sm text-zinc-600 mt-1">Daftar sekali, bisa booking antrean & pantau progres kapan saja.</p>
       {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}

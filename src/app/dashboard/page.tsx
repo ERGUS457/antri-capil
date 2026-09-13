@@ -32,7 +32,7 @@ export default function DashboardPage() {
   if (status === "unauthenticated") return (
     <div className="min-h-screen grid place-items-center bg-[#FFFBF0] px-6">
       <div className="bg-white rounded-2xl border border-orange-100 p-8 max-w-sm w-full text-center shadow-sm">
-        <img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-12 h-12 rounded-xl object-cover border border-orange-100 bg-white mx-auto" />
+        <img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-12 h-12 rounded-xl object-contain border border-orange-100 bg-white mx-auto" />
         <p className="font-black mt-3">Belum login</p>
         <p className="text-sm text-zinc-500 mt-1">Silakan login untuk melihat antrean Anda.</p>
         <Link href="/login" className="mt-4 inline-block bg-teal-600 text-white px-6 py-3 rounded-full font-bold">Masuk →</Link>
@@ -43,7 +43,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#FFFBF0] text-zinc-900">
       <div className="max-w-4xl mx-auto px-6 h-[64px] flex items-center justify-between border-b border-orange-100 bg-white/80 backdrop-blur sticky top-0 z-10">
-        <Link href="/" className="flex items-center gap-2 font-black"><img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-cover border border-orange-100 bg-white" /> AntriCapil</Link>
+        <Link href="/" className="flex items-center gap-2 font-black"><img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-contain border border-orange-100 bg-white" /> AntriCapil</Link>
         <Link href="/booking" className="bg-teal-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-teal-700">+ Booking</Link>
       </div>
       <div className="max-w-4xl mx-auto p-6 md:p-10">

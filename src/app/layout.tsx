@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AntriCapil — Antrean Online Disdukcapil Kab. Sambas",
   description: "Booking antrean online KTP, KK, KIA, Pindah & Akta di Disdukcapil Kabupaten Sambas. Daftar akun, dapat nomor + QR, pantau progres.",
-  icons: { icon: "/logo-sambas.jpg" },
+  icons: { icon: "/logo-sambas.png" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -15,7 +15,7 @@ export default function Home() {
       <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-orange-100">
         <div className="max-w-6xl mx-auto px-6 h-[68px] flex items-center justify-between gap-6">
           <Link href="/" className="flex items-center gap-2.5 font-extrabold text-[17px] tracking-tight">
-            <span className="w-9 h-9 rounded-xl bg-teal-600 text-white grid place-items-center text-[15px] shadow-sm">◈</span>
+            <img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-9 h-9 rounded-xl object-cover border border-orange-100 shadow-sm bg-white" />
             <span className="text-zinc-900">Antri<span className="text-teal-600">Capil</span></span>
             <span className="hidden sm:inline text-[10px] font-bold tracking-widest bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full ml-1">SAMBAS</span>
           </Link>

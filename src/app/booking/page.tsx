@@ -41,25 +41,28 @@ export default function BookingPage() {
   }
 
   const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
-
-  if (status === 'loading') return <div className="min-h-screen grid place-items-center bg-gray-50 text-zinc-500">Memuat sesi...</div>;
+  if (status === 'loading') return <div className="min-h-screen grid place-items-center bg-[#FFFBF0] text-zinc-500">Memuat sesi...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-[#FFFBF0] text-zinc-900">
+      <div className="max-w-6xl mx-auto px-6 h-[64px] flex items-center justify-between border-b border-orange-100 bg-white/80 backdrop-blur sticky top-0 z-10">
+        <Link href="/" className="flex items-center gap-2 font-black"><img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-cover border border-orange-100 bg-white shadow-sm" /> AntriCapil</Link>
+        <Link href="/dashboard" className="text-sm font-bold text-teal-600 hover:underline">Riwayat Saya →</Link>
+      </div>
       <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium">← Beranda</Link>
-        <Link href="/dashboard" className="text-sm font-bold text-blue-600 hover:underline">Dashboard Saya →</Link>
+        <Link href="/" className="text-sm text-zinc-600 hover:text-zinc-900 font-medium">← Beranda</Link>
+        <span className="text-xs bg-white border border-orange-100 px-3 py-1 rounded-full font-bold text-zinc-500">Booking wajib login</span>
       </div>
       <div className="max-w-xl mx-auto px-6 pb-16">
-        <div className="bg-white rounded-[20px] border border-gray-200 p-8 shadow-sm">
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Booking Antrean</h1>
-          <p className="text-sm font-medium text-gray-600 mt-1">Hanya untuk warga terdaftar. Data NIK & email diambil dari akun kamu.</p>
+        <div className="bg-white rounded-[20px] border border-orange-100 p-8 shadow-sm">
+          <h1 className="text-2xl font-black tracking-tight">Booking Antrean</h1>
+          <p className="text-sm font-medium text-zinc-600 mt-1">Hanya untuk warga terdaftar. Data NIK & email diambil dari akun kamu.</p>
 
-          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-center justify-between">
+          <div className="mt-4 bg-teal-50 border border-teal-200 rounded-xl px-4 py-3 flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold text-blue-700 uppercase tracking-widest">Akun warga</p>
-              <p className="text-sm font-bold text-gray-900">{user?.name || '-'}</p>
-              <p className="text-xs text-gray-600">{user?.email || ''} {user?.nik ? `• NIK ${user.nik}` : ''}</p>
+              <p className="text-xs font-bold text-teal-700 uppercase tracking-widest">Akun warga</p>
+              <p className="text-sm font-bold text-zinc-900">{user?.name || '-'}</p>
+              <p className="text-xs text-zinc-600">{user?.email || ''} {user?.nik ? `• NIK ${user.nik}` : ''}</p>
             </div>
             <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" title="Login aktif" />
           </div>
@@ -68,22 +71,21 @@ export default function BookingPage() {
 
           <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-900">Layanan *</span>
-              <select value={form.layananKode} onChange={e => setForm(s => ({ ...s, layananKode: e.target.value }))} className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white">
+              <span className="text-sm font-semibold text-zinc-900">Layanan *</span>
+              <select value={form.layananKode} onChange={e => setForm(s => ({ ...s, layananKode: e.target.value }))} className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white">
                 {layananOptions.map(o => <option key={o.kode} value={o.kode}>{o.label} ({o.kode})</option>)}
               </select>
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-900">Tanggal Kunjungan *</span>
-              <input type="date" value={form.tanggal} min={tomorrow} onChange={e => setForm(s => ({ ...s, tanggal: e.target.value }))} className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
-              <span className="text-xs text-gray-500">Kuota 80/hari per layanan. Pilih H+1 atau setelahnya. Tiket & QR dikirim ke email akun.</span>
+              <span className="text-sm font-semibold text-zinc-900">Tanggal Kunjungan *</span>
+              <input type="date" value={form.tanggal} min={tomorrow} onChange={e => setForm(s => ({ ...s, tanggal: e.target.value }))} className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" required />
+              <span className="text-xs text-zinc-500">Kuota 80/hari per layanan. Pilih H+1 atau setelahnya. Tiket & QR dikirim ke email akun.</span>
             </label>
 
-            <button disabled={loading} type="submit" className="mt-2 bg-blue-600 text-white rounded-full py-3.5 font-semibold hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-500/20">
+            <button disabled={loading} type="submit" className="mt-2 bg-teal-600 text-white rounded-full py-3.5 font-bold hover:bg-teal-700 disabled:opacity-50 shadow-md shadow-teal-600/20">
               {loading ? 'Memproses...' : 'Dapatkan Nomor Antrean →'}
             </button>
           </form>
-          <p className="text-center text-xs text-gray-400 mt-4">Butuh ganti data? <Link href="/register" className="text-blue-600 hover:underline">Perbarui di profil</Link> • Status antrean bisa dipantau di Dashboard.</p>
         </div>
       </div>
     </div>

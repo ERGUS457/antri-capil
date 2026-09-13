@@ -41,7 +41,7 @@ function LoginForm() {
 
   return (
     <div className="bg-white rounded-[24px] border border-orange-100 p-8 max-w-md w-full shadow-sm">
-      <div className="w-11 h-11 rounded-xl bg-teal-600 text-white grid place-items-center font-black text-lg">◈</div>
+      <img src="/logo-sambas.jpg" alt="Lambang Kabupaten Sambas" className="w-11 h-11 rounded-xl object-cover border border-orange-100 bg-white shadow-sm" />
       <h1 className="text-2xl font-black mt-4 tracking-tight text-zinc-900">Masuk</h1>
       <p className="text-sm text-zinc-600 mt-1">Masuk pakai email atau NIK yang sudah didaftarkan.</p>
       {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}

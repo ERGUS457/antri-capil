@@ -37,44 +37,45 @@ function RegisterForm() {
   }
 
   return (
-    <div className="bg-white rounded-[20px] border border-gray-200 p-8 max-w-md w-full shadow-sm">
-      <div className="w-10 h-10 rounded-xl bg-blue-600 text-white grid place-items-center font-bold">◈</div>
-      <h1 className="text-2xl font-extrabold mt-4">Daftar Akun ANTRI-CAPIL</h1>
-      <p className="text-sm text-gray-600 mt-1">Daftar dulu, lalu langsung booking antrean. Data tersimpan untuk pemantauan.</p>
+    <div className="bg-white rounded-[24px] border border-orange-100 p-8 max-w-md w-full shadow-sm">
+      <div className="w-11 h-11 rounded-xl bg-teal-600 text-white grid place-items-center font-black text-lg">◈</div>
+      <h1 className="text-2xl font-black mt-4 tracking-tight text-zinc-900">Daftar Akun Warga</h1>
+      <p className="text-sm text-zinc-600 mt-1">Daftar sekali, bisa booking antrean & pantau progres kapan saja.</p>
       {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}
       <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold">Nama Lengkap *</span>
-          <input value={form.name} onChange={e => setForm(s => ({ ...s, name: e.target.value }))} placeholder="Nama sesuai KTP" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
+          <span className="text-sm font-semibold text-zinc-800">Nama Lengkap *</span>
+          <input value={form.name} onChange={e => setForm(s => ({ ...s, name: e.target.value }))} placeholder="Nama sesuai KTP" className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" required />
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold">Email *</span>
-          <input type="email" value={form.email} onChange={e => setForm(s => ({ ...s, email: e.target.value }))} placeholder="email@contoh.com" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
+          <span className="text-sm font-semibold text-zinc-800">Email *</span>
+          <input type="email" value={form.email} onChange={e => setForm(s => ({ ...s, email: e.target.value }))} placeholder="email@contoh.com" className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" required />
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold">NIK (16 digit, wajib untuk warga)</span>
-          <input value={form.nik} onChange={e => setForm(s => ({ ...s, nik: e.target.value.replace(/\D/g,'').slice(0,16) }))} placeholder="3271xxxxxxxxxxxx" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" />
+          <span className="text-sm font-semibold text-zinc-800">NIK (16 digit)</span>
+          <input value={form.nik} onChange={e => setForm(s => ({ ...s, nik: e.target.value.replace(/\D/g,'').slice(0,16) }))} placeholder="6101xxxxxxxxxxxx" className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" />
+          <span className="text-xs text-zinc-500">NIK dipakai untuk verifikasi di loket. Boleh dikosongkan, tapi disarankan diisi.</span>
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold">Password *</span>
-          <input type="password" value={form.password} onChange={e => setForm(s => ({ ...s, password: e.target.value }))} placeholder="Minimal 6 karakter" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
+          <span className="text-sm font-semibold text-zinc-800">Password *</span>
+          <input type="password" value={form.password} onChange={e => setForm(s => ({ ...s, password: e.target.value }))} placeholder="Minimal 6 karakter" className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" required />
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-semibold">Konfirmasi Password *</span>
-          <input type="password" value={form.confirm} onChange={e => setForm(s => ({ ...s, confirm: e.target.value }))} placeholder="Ulangi password" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
+          <span className="text-sm font-semibold text-zinc-800">Konfirmasi Password *</span>
+          <input type="password" value={form.confirm} onChange={e => setForm(s => ({ ...s, confirm: e.target.value }))} placeholder="Ulangi password" className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" required />
         </label>
-        <button disabled={loading} type="submit" className="bg-blue-600 text-white rounded-full py-3.5 font-semibold hover:bg-blue-700 disabled:opacity-50">{loading ? 'Memproses...' : 'Daftar & Lanjut Booking →'}</button>
+        <button disabled={loading} type="submit" className="bg-teal-600 text-white rounded-full py-3.5 font-bold hover:bg-teal-700 disabled:opacity-50 shadow-md shadow-teal-600/20">{loading ? 'Memproses...' : 'Daftar & Lanjut →'}</button>
       </form>
-      <p className="text-sm text-center text-gray-600 mt-6">Sudah punya akun? <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-blue-600 font-semibold hover:underline">Masuk</Link></p>
-      <p className="text-xs text-center text-gray-500 mt-3"><Link href="/" className="hover:underline">← Beranda</Link></p>
+      <p className="text-sm text-center text-zinc-600 mt-6">Sudah punya akun? <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-teal-600 font-bold hover:underline">Masuk</Link></p>
+      <p className="text-xs text-center text-zinc-500 mt-3"><Link href="/" className="hover:underline">← Kembali ke Beranda</Link></p>
     </div>
   );
 }
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-10 text-gray-900">
-      <Suspense fallback={<div className="bg-white rounded-[20px] p-8 border">Memuat...</div>}>
+    <div className="min-h-screen bg-[#FFFBF0] flex items-center justify-center px-6 py-10 text-zinc-900">
+      <Suspense fallback={<div className="bg-white rounded-[24px] p-8 border border-orange-100 shadow-sm">Memuat...</div>}>
         <RegisterForm />
       </Suspense>
     </div>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { sendBookingEmail } from "@/lib/email";
+import { generateQR } from "@/lib/qr";
 
 export async function POST(req: Request) {
   try {
@@ -91,11 +92,13 @@ export async function POST(req: Request) {
 
     // Kirim email via Resend (non-blocking, jangan gagalkan booking)
     if (targetEmail) {
+      const qrCode = await generateQR(`${process.env.NEXTAUTH_URL || "https://antri-capil.vercel.app"}/tiket/${antrean.id}`);
       sendBookingEmail(targetEmail, {
         nomor,
-        layanan: layanan.nama,
+        layananKode: layanan.kode as string,
+        layananNama: layanan.nama,
         tanggal: tgl.toISOString().slice(0, 10),
-        id: antrean.id,
+        qrCode,
       }).catch((e) => console.error("[booking] email failed", e));
     } else {
       console.warn("[booking] no email, skip send", antrean.id);

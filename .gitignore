@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 build-proposal.py
 docs/
+
+.vercel
+.env*

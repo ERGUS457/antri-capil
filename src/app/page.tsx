@@ -19,9 +19,9 @@ export default function Home() {
             AntriCapil
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-zinc-600">
-            <Link href="/booking" className="hover:text-zinc-900">Booking</Link>
-            <Link href="/admin" className="hover:text-zinc-900">Admin</Link>
-            <Link href="/display" className="hover:text-zinc-900">Display</Link>
+            <Link href="/booking" className="hover:text-zinc-900 font-medium">Booking</Link>
+            <Link href="/display" className="hover:text-zinc-900 font-medium">Display TV</Link>
+            <Link href="/admin-capil-loket" className="text-zinc-400 hover:text-zinc-600 text-xs">Akses Petugas</Link>
           </div>
           <Link href="/booking" className="bg-zinc-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-black">Ambil Antrean</Link>
         </div>

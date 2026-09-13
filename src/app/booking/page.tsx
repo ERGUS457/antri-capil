@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 const layananOptions = [
@@ -13,16 +14,31 @@ const layananOptions = [
 
 export default function BookingPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const user = session?.user as any;
+  const isLoggedIn = !!user?.id;
+
   const [form, setForm] = useState({ nik: '', nama: '', email: '', layananKode: 'KTP', tanggal: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      setForm(s => ({
+        ...s,
+        nik: user.nik || s.nik,
+        nama: user.name || s.nama,
+        email: user.email || s.email,
+      }));
+    }
+  }, [user?.id]);
 
   function update(k: string, v: string) { setForm(s => ({ ...s, [k]: v })); }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    if (form.nik.length !== 16) { setError('NIK harus 16 digit'); return; }
+    if (!isLoggedIn && form.nik.length !== 16) { setError('NIK harus 16 digit (atau login dulu)'); return; }
     if (!form.tanggal) { setError('Pilih tanggal kunjungan'); return; }
     setLoading(true);
     try {
@@ -43,28 +59,35 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium">← Kembali ke Beranda</Link>
+      <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium">← Beranda</Link>
+        {!isLoggedIn && <Link href="/login" className="text-sm font-bold text-blue-600 hover:underline">Login biar auto-isi →</Link>}
       </div>
       <div className="max-w-xl mx-auto px-6 pb-16">
         <div className="bg-white rounded-[20px] border border-gray-200 p-8 shadow-sm">
           <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Booking Antrean</h1>
           <p className="text-sm font-medium text-gray-700 mt-1">Isi data sesuai KTP. Tiket & QR akan dikirim ke email.</p>
+          {isLoggedIn && (
+            <div className="mt-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs px-3 py-2.5 rounded-xl">
+              Login sebagai <b>{user.name}</b> ({user.email}) • NIK otomatis terisi
+            </div>
+          )}
 
           {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}
 
           <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-900">NIK (16 digit) *</span>
-              <input value={form.nik} onChange={e => update('nik', e.target.value.replace(/\D/g, '').slice(0, 16))} placeholder="3271xxxxxxxxxxxx" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
+              <span className="text-sm font-semibold text-gray-900">NIK (16 digit) {!isLoggedIn && '*'}</span>
+              <input value={form.nik} onChange={e => update('nik', e.target.value.replace(/\D/g, '').slice(0, 16))} placeholder="3271xxxxxxxxxxxx" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required={!isLoggedIn} />
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold text-gray-900">Nama Lengkap *</span>
-              <input value={form.nama} onChange={e => update('nama', e.target.value)} placeholder="Nama sesuai KTP" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required />
+              <span className="text-sm font-semibold text-gray-900">Nama Lengkap {!isLoggedIn && '*'}</span>
+              <input value={form.nama} onChange={e => update('nama', e.target.value)} placeholder="Nama sesuai KTP" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" required={!isLoggedIn} />
             </label>
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-900">Email (untuk tiket & QR)</span>
               <input type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="email@contoh.com" className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" />
+              {isLoggedIn && <span className="text-xs text-gray-500">Email dari akun kamu, bisa diubah.</span>}
             </label>
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-gray-900">Layanan *</span>

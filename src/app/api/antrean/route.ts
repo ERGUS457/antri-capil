@@ -18,18 +18,25 @@ export async function GET(req: Request) {
         include: { warga: true, layanan: true, user: true },
       });
       if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      // Security: only owner or admin can see full ticket details?
-      if (item.userId && item.userId !== (session?.user as any)?.id && (session?.user as any)?.role !== 'ADMIN') {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-      }
+      // tiket publik boleh dilihat siapa saja via ID (QR), tapi batasi data sensitif jika perlu
       return NextResponse.json(item);
     }
 
     const where: any = {};
-    // restrict view by user if not admin
-    if ((session?.user as any)?.role !== 'ADMIN') {
-      where.userId = (session?.user as any)?.id;
+
+    // Hanya batasi ke userId jika request dari WARGA yang login DAN tanpa filter tanggal/status publik
+    // Untuk display publik (tanpa session) atau admin, tampilkan semua
+    const role = (session?.user as any)?.role;
+    const userId = (session?.user as any)?.id;
+    // Jika WARGA login dan akses /dashboard (tanpa tanggal) -> filter miliknya
+    // Jika ada param tanggal+status (admin/display) -> jangan filter by user
+    const isPublicDisplay = !session;
+    const isFilteredQuery = tanggal || status || layananId || layananKode;
+
+    if (role === "WARGA" && userId && !isFilteredQuery) {
+      where.userId = userId;
     }
+    // Admin & public display: no userId filter
 
     if (tanggal) {
       const d = new Date(tanggal);
@@ -46,7 +53,7 @@ export async function GET(req: Request) {
 
     const antrean = await prisma.antrean.findMany({
       where,
-      include: { warga: true, layanan: true },
+      include: { warga: true, layanan: true, user: true },
       orderBy: [{ tanggal: "asc" }, { nomor: "asc" }],
       take: 200,
     });
@@ -72,7 +79,7 @@ export async function PATCH(req: Request) {
     const data = map[action.toUpperCase()];
     if (!data) return NextResponse.json({ error: "action harus PANGGIL/SELESAI/LEWATI/BATAL" }, { status: 400 });
 
-    const updated = await prisma.antrean.update({ where: { id }, data, include: { warga: true, layanan: true } });
+    const updated = await prisma.antrean.update({ where: { id }, data, include: { warga: true, layanan: true, user: true } });
     return NextResponse.json(updated);
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });

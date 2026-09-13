@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 const layanan = [
   { kode: "KTP", nama: "KTP Elektronik", desc: "Buat & perpanjang KTP-el, rekam biometrik", icon: "🪪", bg: "bg-sky-100", accent: "text-sky-600" },
@@ -11,27 +12,7 @@ const layanan = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#FFFBF0] text-zinc-800">
-      {/* NAV — ramah, bersih, tanpa jejak admin */}
-      <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-orange-100">
-        <div className="max-w-6xl mx-auto px-6 h-[68px] flex items-center justify-between gap-6">
-          <Link href="/" className="flex items-center gap-2.5 font-extrabold text-[17px] tracking-tight">
-            <img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-9 h-9 rounded-xl object-contain border border-orange-100 shadow-sm bg-white" />
-            <span className="text-zinc-900">Antri<span className="text-teal-600">Capil</span></span>
-            <span className="hidden sm:inline text-[10px] font-bold tracking-widest bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full ml-1">SAMBAS</span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-1 text-sm">
-            <Link href="#layanan" className="px-3 py-2 rounded-full hover:bg-zinc-50 font-medium text-zinc-600">Layanan</Link>
-            <Link href="/display" className="px-3 py-2 rounded-full hover:bg-zinc-50 font-medium text-zinc-600">Papan Antrean</Link>
-            <Link href="/dashboard" className="px-3 py-2 rounded-full hover:bg-zinc-50 font-medium text-zinc-600">Riwayat Saya</Link>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <Link href="/login" className="hidden sm:inline-flex px-5 py-2.5 rounded-full text-sm font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200">Masuk</Link>
-            <Link href="/register" className="inline-flex bg-teal-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 transition">Daftar</Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* HERO — warm, friendly, untuk semua usia */}
       <section className="max-w-6xl mx-auto px-6 pt-10 pb-8 md:pt-16 md:pb-14 grid md:grid-cols-2 gap-10 items-center">

@@ -18,7 +18,7 @@ function AdminContent() {
   const isAdmin = role === 'ADMIN';
 
   const [data, setData] = useState<Antrean[]>([]);
-  const [filter, setFilter] = useState({ tanggal: new Date().toISOString().slice(0, 10), status: '' });
+  const [filter, setFilter] = useState({ tanggal: '', status: '' });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
 
@@ -104,7 +104,11 @@ function AdminContent() {
 
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 flex flex-wrap gap-4 items-end shadow-sm">
           <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Tanggal</span>
-            <input type="date" value={filter.tanggal} onChange={e => setFilter(s => ({ ...s, tanggal: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:bg-white" />
+            <div className="flex gap-2 items-center">
+              <input type="date" value={filter.tanggal} onChange={e => setFilter(s => ({ ...s, tanggal: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:bg-white" />
+              {filter.tanggal && <button onClick={() => setFilter(s => ({ ...s, tanggal: '' }))} className="text-xs font-bold text-blue-600 hover:underline whitespace-nowrap">Semua tanggal</button>}
+              {!filter.tanggal && <span className="text-xs font-bold text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-full">Semua tanggal</span>}
+            </div>
           </label>
           <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Status</span>
             <select value={filter.status} onChange={e => setFilter(s => ({ ...s, status: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:bg-white">
@@ -112,7 +116,7 @@ function AdminContent() {
             </select>
           </label>
           <button onClick={fetchAntrean} className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700">Refresh</button>
-          <span className="text-xs text-zinc-400 ml-auto">{data.length} antrean • {filter.tanggal} • {filter.status}</span>
+          <span className="text-xs text-zinc-400 ml-auto">{data.length} antrean • {filter.tanggal || 'Semua tanggal'} • {filter.status || 'Semua status'}</span>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">

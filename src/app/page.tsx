@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import TiketPreview from "@/components/TiketPreview";
 
 const layanan = [
   { kode: "KTP", nama: "KTP Elektronik", desc: "Buat & perpanjang KTP-el, rekam biometrik", icon: "🪪", bg: "bg-sky-100", accent: "text-sky-600" },
@@ -46,32 +47,20 @@ export default function Home() {
         <div className="relative">
           <div className="rounded-[28px] bg-gradient-to-br from-teal-600 via-teal-500 to-amber-400 p-[1.5px] shadow-xl">
             <div className="rounded-[26px] bg-white p-6 md:p-7">
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] font-black tracking-widest text-zinc-400 uppercase">Tiket Digital Kamu</p>
-                <span className="bg-amber-100 text-amber-700 text-[11px] font-black px-3 py-1 rounded-full">MENUNGGU</span>
-              </div>
-              <div className="mt-4 flex gap-4 items-start">
-                <div className="flex-1">
-                  <p className="text-xs font-bold tracking-widest text-teal-600">KTP • 14 SEP 2025 • 09:00</p>
-                  <p className="text-[44px] font-black leading-none tracking-tighter text-zinc-900 mt-1">A-012</p>
-                  <p className="text-sm text-zinc-600 mt-1">Atas nama <b className="text-zinc-900">Budi Santoso</b></p>
-                  <div className="mt-3 inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">● Progres bisa dipantau di Riwayat Saya</div>
+                <TiketPreview />
+                <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                  {[
+                    { k: "Daftar", v: "di HP" },
+                    { k: "Booking", v: "pilih jam" },
+                    { k: "Datang", v: "tunjuk QR" },
+                  ].map(s => (
+                    <div key={s.k} className="bg-[#FFFBF0] border border-orange-100 rounded-2xl py-2.5">
+                      <p className="text-[10px] font-black tracking-widest text-zinc-400 uppercase">{s.k}</p>
+                      <p className="text-sm font-bold text-zinc-900">{s.v}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="w-[92px] h-[92px] rounded-2xl border-2 border-dashed border-zinc-200 grid place-items-center bg-zinc-50 text-zinc-400 text-[10px] font-bold leading-tight text-center p-2">QR CODE<br />tunjuk di loket</div>
               </div>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                {[
-                  { k: "Daftar", v: "di HP" },
-                  { k: "Booking", v: "pilih jam" },
-                  { k: "Datang", v: "tunjuk QR" },
-                ].map(s => (
-                  <div key={s.k} className="bg-[#FFFBF0] border border-orange-100 rounded-2xl py-2.5">
-                    <p className="text-[10px] font-black tracking-widest text-zinc-400 uppercase">{s.k}</p>
-                    <p className="text-sm font-bold text-zinc-900">{s.v}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
           <p className="text-center text-xs text-zinc-500 mt-3">Contoh tampilan — setelah booking, tiket persis seperti ini masuk email & Riwayat Saya</p>
         </div>

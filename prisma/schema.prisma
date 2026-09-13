@@ -23,6 +23,11 @@ enum LayananKode {
   AKTA
 }
 
+enum Role {
+  WARGA
+  ADMIN
+}
+
 model Layanan {
   id          String        @id @default(cuid())
   kode        LayananKode   @unique
@@ -41,24 +46,41 @@ model Warga {
   antrean Antrean[]
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  nik       String?  @unique
+  name      String
+  password  String
+  role      Role     @default(WARGA)
+  antrean   Antrean[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Antrean {
-  id          String        @id @default(cuid())
-  nomor       Int
-  tanggal     DateTime
-  status      StatusAntrean @default(MENUNGGU)
+  id           String        @id @default(cuid())
+  nomor        Int
+  tanggal      DateTime
+  status       StatusAntrean @default(MENUNGGU)
   waktuPanggil DateTime?
   waktuSelesai DateTime?
-  
-  wargaId     String
-  warga       Warga         @relation(fields: [wargaId], references: [id])
-  
-  layananId   String
-  layanan     Layanan       @relation(fields: [layananId], references: [id])
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  wargaId   String?
+  warga     Warga?  @relation(fields: [wargaId], references: [id])
+
+  layananId String
+  layanan   Layanan @relation(fields: [layananId], references: [id])
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([layananId, tanggal, nomor])
+  @@index([userId])
+  @@index([wargaId])
 }
 
 model KuotaHarian {
@@ -66,7 +88,7 @@ model KuotaHarian {
   tanggal   DateTime
   jumlah    Int
   terisi    Int      @default(0)
-  
+
   layananId String
   layanan   Layanan  @relation(fields: [layananId], references: [id])
 

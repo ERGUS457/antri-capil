@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import { auth } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
+    const session = await auth();
     const { searchParams } = new URL(req.url);
     const tanggal = searchParams.get("tanggal");
     const layananId = searchParams.get("layananId");
@@ -13,13 +15,22 @@ export async function GET(req: Request) {
     if (id) {
       const item = await prisma.antrean.findUnique({
         where: { id },
-        include: { warga: true, layanan: true },
+        include: { warga: true, layanan: true, user: true },
       });
       if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+      // Security: only owner or admin can see full ticket details?
+      if (item.userId && item.userId !== (session?.user as any)?.id && (session?.user as any)?.role !== 'ADMIN') {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      }
       return NextResponse.json(item);
     }
 
     const where: any = {};
+    // restrict view by user if not admin
+    if ((session?.user as any)?.role !== 'ADMIN') {
+      where.userId = (session?.user as any)?.id;
+    }
+
     if (tanggal) {
       const d = new Date(tanggal);
       d.setUTCHours(0, 0, 0, 0);
@@ -47,6 +58,8 @@ export async function GET(req: Request) {
 
 export async function PATCH(req: Request) {
   try {
+    const session = await auth();
+    if ((session?.user as any)?.role !== 'ADMIN') return NextResponse.json({ error: "Admin only" }, { status: 403 });
     const { id, action } = await req.json() as { id?: string; action?: string };
     if (!id || !action) return NextResponse.json({ error: "id dan action wajib" }, { status: 400 });
 

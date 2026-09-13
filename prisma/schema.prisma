@@ -1,0 +1,74 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StatusAntrean {
+  MENUNGGU
+  DIPANGGIL
+  SELESAI
+  LEWATI
+  BATAL
+}
+
+enum LayananKode {
+  KTP
+  KK
+  KIA
+  PINDAH
+  AKTA
+}
+
+model Layanan {
+  id          String        @id @default(cuid())
+  kode        LayananKode   @unique
+  nama        String
+  deskripsi   String?
+  kuotaPerJam Int           @default(10)
+  antrean     Antrean[]
+  kuota       KuotaHarian[]
+}
+
+model Warga {
+  id      String    @id @default(cuid())
+  nik     String    @unique
+  nama    String
+  email   String?
+  antrean Antrean[]
+}
+
+model Antrean {
+  id          String        @id @default(cuid())
+  nomor       Int
+  tanggal     DateTime
+  status      StatusAntrean @default(MENUNGGU)
+  waktuPanggil DateTime?
+  waktuSelesai DateTime?
+  
+  wargaId     String
+  warga       Warga         @relation(fields: [wargaId], references: [id])
+  
+  layananId   String
+  layanan     Layanan       @relation(fields: [layananId], references: [id])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([layananId, tanggal, nomor])
+}
+
+model KuotaHarian {
+  id        String   @id @default(cuid())
+  tanggal   DateTime
+  jumlah    Int
+  terisi    Int      @default(0)
+  
+  layananId String
+  layanan   Layanan  @relation(fields: [layananId], references: [id])
+
+  @@unique([layananId, tanggal])
+}

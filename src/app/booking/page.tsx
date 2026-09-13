@@ -48,8 +48,8 @@ export default function BookingPage() {
       </div>
       <div className="max-w-xl mx-auto px-6 pb-16">
         <div className="bg-white rounded-[20px] border border-gray-200 p-8 shadow-sm">
-          <h1 className="text-2xl font-bold text-gray-900">Booking Antrean</h1>
-          <p className="text-sm text-gray-500 mt-1">Isi data sesuai KTP. Tiket & QR akan dikirim ke email.</p>
+          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Booking Antrean</h1>
+          <p className="text-sm font-medium text-gray-700 mt-1">Isi data sesuai KTP. Tiket & QR akan dikirim ke email.</p>
 
           {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}
 

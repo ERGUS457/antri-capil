@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import QRCode from 'qrcode';
+import { useSession } from 'next-auth/react';
 
 type Tiket = {
   id: string; nomor: number; tanggal: string; status: string;
@@ -13,6 +14,10 @@ type Tiket = {
 
 export default function TiketPage() {
   const { id } = useParams() as { id: string };
+  const { data: session } = useSession();
+  const role = (session?.user as any)?.role;
+  const dashboardHref = role === 'ADMIN' ? '/admin' : '/dashboard';
+  const dashboardLabel = role === 'ADMIN' ? 'Dashboard Loket' : 'Riwayat Saya';
   const [tiket, setTiket] = useState<Tiket | null>(null);
   const [qr, setQr] = useState('');
   const [error, setError] = useState('');
@@ -58,7 +63,7 @@ export default function TiketPage() {
         </div>
         <div className="mt-4 flex gap-3 print:hidden">
           <button onClick={() => window.print()} className="flex-1 bg-zinc-900 text-white rounded-full py-3 font-semibold hover:bg-black">🖨 Cetak Tiket</button>
-          <Link href="/" className="flex-1 text-center bg-white border border-zinc-200 rounded-full py-3 font-semibold hover:bg-zinc-50">Beranda</Link>
+          <Link href={dashboardHref} className="flex-1 text-center bg-teal-600 text-white rounded-full py-3 font-bold hover:bg-teal-700">{dashboardLabel} →</Link>
         </div>
       </div>
     </div>

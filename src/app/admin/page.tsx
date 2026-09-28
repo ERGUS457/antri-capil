@@ -69,7 +69,7 @@ function AdminContent() {
           <h1 className="text-2xl font-bold mt-4">Admin Loket</h1>
           <p className="text-sm text-gray-500 mt-1">Login sebagai admin untuk kelola antrean.</p>
           <Link href="/login" className="mt-6 inline-block bg-blue-600 text-white rounded-full px-8 py-3 font-bold hover:bg-blue-700">Login Admin →</Link>
-          <p className="text-xs text-gray-400 mt-4">Akun admin: admin@disdukcapil.sambas.go.id / capil123</p>
+          <p className="text-xs text-gray-400 mt-4">Hubungi operator Disdukcapil bila lupa kredensial.</p>
           <Link href="/" className="block text-xs text-gray-500 hover:underline mt-3">← Beranda</Link>
         </div>
       </div>

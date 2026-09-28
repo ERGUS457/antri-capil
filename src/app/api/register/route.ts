@@ -37,16 +37,17 @@ export async function POST(req: Request) {
       }
     }
 
-    // Only allow ADMIN if secret key provided via header or body adminKey — for now allow if role===ADMIN but restrict in prod via env
+    // Role escalation is not available over the public registration endpoint at all. An ADMIN
+    // account is provisioned offline (prisma/seed-admin.ts) or by promoting an existing user with
+    // `hermes`-side SQL; the browser may never choose its own role, and no request-supplied key can
+    // grant it. Previously this read ADMIN_SECRET with a hardcoded "capil123" fallback, so anyone who
+    // knew the shipped default could POST role:"ADMIN" and mint a full admin account (#audit 2026-09-28).
     let finalRole: "WARGA" | "ADMIN" = "WARGA"
     if (role === "ADMIN") {
-      // simple gate: require ADMIN_SECRET env if set
-      const adminSecret = process.env.ADMIN_SECRET || "capil123"
-      const providedKey = (body as any).adminKey || req.headers.get("x-admin-key")
-      if (providedKey !== adminSecret) {
-        return NextResponse.json({ error: "Kunci admin tidak valid untuk membuat akun ADMIN" }, { status: 403 })
-      }
-      finalRole = "ADMIN"
+      return NextResponse.json(
+        { error: "Pendaftaran mandiri tidak dapat membuat akun admin. Hubungi_operator_disdukcapil." },
+        { status: 403 }
+      )
     }
 
     const hashed = await bcrypt.hash(password, 10)

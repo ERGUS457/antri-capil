@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { ANTREAN_SELECT } from "@/lib/antrean-select";
 
 export async function GET(req: Request) {
   try {
@@ -15,10 +16,11 @@ export async function GET(req: Request) {
     if (id) {
       const item = await prisma.antrean.findUnique({
         where: { id },
-        include: { warga: true, layanan: true, user: true },
+        // Explicit field list (see lib/antrean-select.ts): `include: { user: true }` would also
+        // serialise User.password, publishing every citizen's bcrypt hash to the public.
+        select: ANTREAN_SELECT,
       });
       if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      // tiket publik boleh dilihat siapa saja via ID (QR), tapi batasi data sensitif jika perlu
       return NextResponse.json(item);
     }
 
@@ -53,9 +55,10 @@ export async function GET(req: Request) {
     }
     if (status) where.status = status;
 
+    // Explicit field list, never `include: { user: true }` — see lib/antrean-select.ts.
     const antrean = await prisma.antrean.findMany({
       where,
-      include: { warga: true, layanan: true, user: true },
+      select: ANTREAN_SELECT,
       orderBy: [{ tanggal: "asc" }, { nomor: "asc" }],
       take: 200,
     });
@@ -81,7 +84,11 @@ export async function PATCH(req: Request) {
     const data = map[action.toUpperCase()];
     if (!data) return NextResponse.json({ error: "action harus PANGGIL/SELESAI/LEWATI/BATAL" }, { status: 400 });
 
-    const updated = await prisma.antrean.update({ where: { id }, data, include: { warga: true, layanan: true, user: true } });
+    const updated = await prisma.antrean.update({
+      where: { id },
+      data,
+      select: ANTREAN_SELECT,
+    });
     return NextResponse.json(updated);
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });

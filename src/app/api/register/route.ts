@@ -6,12 +6,20 @@ import { toClientErrorMessage } from "@/lib/client-error"
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { name, email, nik, password, role } = body as {
+    const { name, email, nik, password, role, privacyAccepted } = body as {
       name?: string
       email?: string
       nik?: string
       password?: string
       role?: string
+      privacyAccepted?: boolean
+    }
+
+    if (!privacyAccepted) {
+      return NextResponse.json(
+        { error: "Anda harus menyetujui Kebijakan Privasi untuk melanjutkan pendaftaran." },
+        { status: 400 }
+      )
     }
 
     if (!name || !email || !password) {
@@ -59,8 +67,9 @@ export async function POST(req: Request) {
         nik: nik || null,
         password: hashed,
         role: finalRole as any,
+        privacyAcceptedAt: new Date(),
       },
-      select: { id: true, email: true, nik: true, name: true, role: true, createdAt: true },
+      select: { id: true, email: true, nik: true, name: true, role: true, createdAt: true }
     })
 
     return NextResponse.json({ user }, { status: 201 })

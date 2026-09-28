@@ -63,12 +63,12 @@ function AdminContent() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 text-gray-900">
+      <div className="min-h-screen bg-[#FFFBF0] flex items-center justify-center p-6 text-gray-900">
         <div className="bg-white rounded-2xl border border-gray-200 p-8 max-w-md w-full shadow-sm text-center">
-          <div className="w-12 h-12 rounded-xl bg-blue-600 text-white grid place-items-center text-xl font-bold mx-auto">🔒</div>
+          <div className="w-12 h-12 rounded-xl bg-teal-600 text-white grid place-items-center text-xl font-bold mx-auto">🔒</div>
           <h1 className="text-2xl font-bold mt-4">Admin Loket</h1>
           <p className="text-sm text-gray-500 mt-1">Login sebagai admin untuk kelola antrean.</p>
-          <Link href="/login" className="mt-6 inline-block bg-blue-600 text-white rounded-full px-8 py-3 font-bold hover:bg-blue-700">Login Admin →</Link>
+          <Link href="/login" className="mt-6 inline-block bg-teal-600 text-white rounded-full px-8 py-3 font-bold hover:bg-teal-700">Login Admin →</Link>
           <p className="text-xs text-gray-400 mt-4">Hubungi operator Disdukcapil bila lupa kredensial.</p>
           <Link href="/" className="block text-xs text-gray-500 hover:underline mt-3">← Beranda</Link>
         </div>
@@ -78,7 +78,7 @@ function AdminContent() {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 text-gray-900">
+      <div className="min-h-screen bg-[#FFFBF0] flex items-center justify-center p-6 text-gray-900">
         <div className="bg-white rounded-2xl border p-8 max-w-md w-full text-center">
           <p className="font-bold text-red-600">Akses Ditolak</p>
           <p className="text-sm text-zinc-500 mt-1">Akun <b>{session.user?.email}</b> bukan ADMIN.</p>
@@ -89,13 +89,15 @@ function AdminContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 p-6 md:p-10">
+    <div className="min-h-screen bg-[#FFFBF0] text-gray-900 p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div><h1 className="text-3xl font-bold tracking-tight">Admin Dashboard Loket</h1><p className="text-gray-500 text-sm">Login sebagai <b>{(session.user as any)?.name}</b> • auto-refresh 5s</p></div>
           <div className="flex items-center gap-3">
-            <Link href="/display" target="_blank" className="bg-gray-900 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-black">Display TV ↗</Link>
-            <Link href="/dashboard" className="bg-white border px-4 py-2.5 rounded-xl text-sm font-medium">Dashboard Warga</Link>
+            <Link href="/display" target="_blank" className="bg-teal-600 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-teal-700">Papan Antrean ↗</Link>
+            <Link href="/admin/verify" className="bg-teal-50 border border-teal-200 text-teal-700 px-4 py-2.5 rounded-full text-sm font-bold">Scan QR</Link>
+            <Link href="/admin/stats" className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2.5 rounded-full text-sm font-bold">Statistik</Link>
+            <Link href="/dashboard" className="bg-white border border-orange-200 px-4 py-2.5 rounded-full text-sm font-bold">Dashboard Warga</Link>
             <button onClick={() => signOut({ callbackUrl: '/' })} className="bg-red-50 text-red-600 border border-red-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-red-100">Keluar</button>
           </div>
         </div>
@@ -105,32 +107,32 @@ function AdminContent() {
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 flex flex-wrap gap-4 items-end shadow-sm">
           <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Tanggal</span>
             <div className="flex gap-2 items-center">
-              <input type="date" value={filter.tanggal} onChange={e => setFilter(s => ({ ...s, tanggal: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:bg-white" />
+              <input type="date" value={filter.tanggal} onChange={e => setFilter(s => ({ ...s, tanggal: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-[#FFFBF0] focus:bg-white" />
               {filter.tanggal && <button onClick={() => setFilter(s => ({ ...s, tanggal: '' }))} className="text-xs font-bold text-blue-600 hover:underline whitespace-nowrap">Semua tanggal</button>}
               {!filter.tanggal && <span className="text-xs font-bold text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-full">Semua tanggal</span>}
             </div>
           </label>
           <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Status</span>
-            <select value={filter.status} onChange={e => setFilter(s => ({ ...s, status: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:bg-white">
+            <select value={filter.status} onChange={e => setFilter(s => ({ ...s, status: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-[#FFFBF0] focus:bg-white">
               <option value="">Semua Status</option><option value="MENUNGGU">MENUNGGU</option><option value="DIPANGGIL">DIPANGGIL</option><option value="SELESAI">SELESAI</option><option value="LEWATI">LEWATI</option><option value="BATAL">BATAL</option>
             </select>
           </label>
-          <button onClick={fetchAntrean} className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700">Refresh</button>
+          <button onClick={fetchAntrean} className="bg-teal-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-teal-700">Refresh</button>
           <span className="text-xs text-zinc-400 ml-auto">{data.length} antrean • {filter.tanggal || 'Semua tanggal'} • {filter.status || 'Semua status'}</span>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
           <table className="w-full text-left border-collapse text-sm">
-            <thead><tr className="bg-gray-50 border-b border-gray-200"><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">No</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Layanan</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Warga</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Status</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Aksi</th></tr></thead>
+            <thead><tr className="bg-[#FFFBF0] border-b border-gray-200"><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">No</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Layanan</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Warga</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Status</th><th className="px-6 py-4 font-bold text-gray-600 uppercase tracking-widest text-[10px]">Aksi</th></tr></thead>
             <tbody className="divide-y divide-gray-100">
               {data.length === 0 ? <tr><td colSpan={5} className="px-6 py-20 text-center text-gray-400">Tidak ada antrean untuk filter ini</td></tr> : data.map(a => (
-                <tr key={a.id} className="hover:bg-gray-50/50 transition">
+                <tr key={a.id} className="hover:bg-[#FFFBF0]/50 transition">
                   <td className="px-6 py-4 font-bold text-lg text-blue-600">{String(a.nomor).padStart(3, '0')}</td>
                   <td className="px-6 py-4"><div><p className="font-bold text-gray-900">{a.layanan.kode}</p><p className="text-xs text-gray-500">{a.layanan.nama}</p></div></td>
                   <td className="px-6 py-4"><div><p className="font-semibold text-gray-900">{a.user?.name || a.warga?.nama || '-'}</p><p className="text-xs text-gray-500">{a.user?.nik || a.warga?.nik || ''} • {a.user?.email || ''}</p></div></td>
-                  <td className="px-6 py-4"><span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${a.status === 'DIPANGGIL' ? 'bg-blue-100 text-blue-700' : a.status === 'MENUNGGU' ? 'bg-amber-100 text-amber-700' : a.status === 'SELESAI' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{a.status}</span></td>
+                  <td className="px-6 py-4"><span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${a.status === 'DIPANGGIL' ? 'bg-teal-100 text-teal-700' : a.status === 'MENUNGGU' ? 'bg-amber-100 text-amber-700' : a.status === 'SELESAI' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{a.status}</span></td>
                   <td className="px-6 py-4"><div className="flex gap-2">
-                    {a.status === 'MENUNGGU' && <button disabled={loading} onClick={() => patch(a.id, 'PANGGIL')} className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50">Panggil</button>}
+                    {a.status === 'MENUNGGU' && <button disabled={loading} onClick={() => patch(a.id, 'PANGGIL')} className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-teal-700 disabled:opacity-50">Panggil</button>}
                     {a.status === 'DIPANGGIL' && <button disabled={loading} onClick={() => patch(a.id, 'SELESAI')} className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-700 disabled:opacity-50">Selesai</button>}
                     {(a.status === 'MENUNGGU' || a.status === 'DIPANGGIL') && <button disabled={loading} onClick={() => patch(a.id, 'LEWATI')} className="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 disabled:opacity-50">Lewati</button>}
                     {(a.status === 'MENUNGGU' || a.status === 'DIPANGGIL') && <button disabled={loading} onClick={() => patch(a.id, 'BATAL')} className="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 disabled:opacity-50">Batal</button>}
@@ -147,7 +149,7 @@ function AdminContent() {
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 grid place-items-center text-gray-500">Memuat...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#FFFBF0] grid place-items-center text-gray-500">Memuat...</div>}>
       <AdminContent />
     </Suspense>
   );

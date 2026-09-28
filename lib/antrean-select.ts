@@ -16,6 +16,7 @@ import type { Prisma } from "@prisma/client";
 /** Full projection: the ticket owner, or an ADMIN. Carries identity, never credentials. */
 export const ANTREAN_SELECT = {
   id: true,
+  qrToken: true,
   nomor: true,
   tanggal: true,
   status: true,
@@ -63,6 +64,7 @@ export const ANTREAN_PUBLIC_SELECT = {
   nomor: true,
   tanggal: true,
   status: true,
+  waktuPanggil: true,
   layanan: {
     select: {
       kode: true,

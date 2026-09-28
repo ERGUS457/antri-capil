@@ -103,7 +103,7 @@ export async function PATCH(req: Request) {
     const map: Record<string, any> = {
       PANGGIL: { status: "DIPANGGIL", waktuPanggil: new Date() },
       SELESAI: { status: "SELESAI", waktuSelesai: new Date() },
-      LEWATI: { status: "LEWATI" },
+      LEWATI: { status: "LEWATI", waktuLewati: new Date() },
       BATAL: { status: "BATAL" },
     };
     const data = map[action.toUpperCase()];
@@ -117,6 +117,34 @@ export async function PATCH(req: Request) {
     return NextResponse.json(updated);
   } catch (e: any) {
     console.error("PATCH /api/antrean error", e);
+    return NextResponse.json({ error: toClientErrorMessage(e) }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const session = await auth();
+    const userId = (session?.user as any)?.id as string | undefined;
+    if (!userId) return NextResponse.json({ error: "Wajib login." }, { status: 401 });
+
+    const id = new URL(req.url).searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "id wajib diisi." }, { status: 400 });
+
+    const ticket = await prisma.antrean.findUnique({
+      where: { id },
+      select: { id: true, userId: true, status: true, tanggal: true, layananId: true },
+    });
+    if (!ticket || ticket.userId !== userId) return NextResponse.json({ error: "Tiket tidak ditemukan." }, { status: 404 });
+    if (ticket.status !== "MENUNGGU") return NextResponse.json({ error: "Tiket hanya dapat dibatalkan saat masih MENUNGGU." }, { status: 409 });
+
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.antrean.update({ where: { id }, data: { status: "BATAL" }, select: { id: true, status: true } });
+      await tx.kuotaHarian.updateMany({ where: { layananId: ticket.layananId, tanggal: ticket.tanggal, terisi: { gt: 0 } }, data: { terisi: { decrement: 1 } } });
+      return result;
+    });
+    return NextResponse.json(updated);
+  } catch (e: unknown) {
+    console.error("DELETE /api/antrean error", e);
     return NextResponse.json({ error: toClientErrorMessage(e) }, { status: 500 });
   }
 }

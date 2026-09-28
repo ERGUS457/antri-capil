@@ -7,27 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum StatusAntrean {
-  MENUNGGU
-  DIPANGGIL
-  SELESAI
-  LEWATI
-  BATAL
-}
-
-enum LayananKode {
-  KTP
-  KK
-  KIA
-  PINDAH
-  AKTA
-}
-
-enum Role {
-  WARGA
-  ADMIN
-}
-
 model Layanan {
   id          String        @id @default(cuid())
   kode        LayananKode   @unique
@@ -52,31 +31,31 @@ model User {
   nik       String?  @unique
   name      String
   password  String
-  role      Role     @default(WARGA)
+  role      Role   @default(WARGA)
+  phone     String?
+  privacyAcceptedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   antrean   Antrean[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Antrean {
   id           String        @id @default(cuid())
+  qrToken      String?       @unique @default(cuid())
   nomor        Int
   tanggal      DateTime
   status       StatusAntrean @default(MENUNGGU)
   waktuPanggil DateTime?
   waktuSelesai DateTime?
-
-  wargaId   String?
-  warga     Warga?  @relation(fields: [wargaId], references: [id])
-
-  layananId String
-  layanan   Layanan @relation(fields: [layananId], references: [id])
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  waktuLewati  DateTime?
+  wargaId      String?
+  layananId    String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  userId       String?
+  layanan      Layanan       @relation(fields: [layananId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
+  warga        Warga?        @relation(fields: [wargaId], references: [id])
 
   @@unique([layananId, tanggal, nomor])
   @@index([userId])
@@ -88,9 +67,29 @@ model KuotaHarian {
   tanggal   DateTime
   jumlah    Int
   terisi    Int      @default(0)
-
   layananId String
   layanan   Layanan  @relation(fields: [layananId], references: [id])
 
   @@unique([layananId, tanggal])
+}
+
+enum StatusAntrean {
+  MENUNGGU
+  DIPANGGIL
+  SELESAI
+  LEWATI
+  BATAL
+}
+
+enum LayananKode {
+  KTP
+  KK
+  KIA
+  PINDAH
+  AKTA
+}
+
+enum Role {
+  WARGA
+  ADMIN
 }

@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -20,11 +21,31 @@ export default function BookingPage() {
   const [form, setForm] = useState({ layananKode: 'KTP', tanggal: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [kuota, setKuota] = useState<{ sisa: number; jumlah: number; penuh: boolean } | null>(null);
+
+  useEffect(() => {
+    async function fetchKuota() {
+      const { layananKode, tanggal } = form;
+      if (!layananKode || !tanggal) {
+        setKuota(null);
+        return;
+      }
+      try {
+        const res = await fetch(`/api/kuota?layananKode=${layananKode}&tanggal=${tanggal}`);
+        const data = await res.json();
+        setKuota(data);
+      } catch (err) {
+        setKuota(null);
+      }
+    }
+    fetchKuota();
+  }, [form.layananKode, form.tanggal]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     if (!form.tanggal) { setError('Pilih tanggal kunjungan'); return; }
+    if (kuota?.penuh) { setError('Kuota penuh untuk layanan ini'); return; }
     setLoading(true);
     try {
       const res = await fetch('/api/booking', {
@@ -41,6 +62,7 @@ export default function BookingPage() {
   }
 
   const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+
   if (status === 'loading') return <div className="min-h-screen grid place-items-center bg-[#FFFBF0] text-zinc-500">Memuat sesi...</div>;
 
   return (
@@ -49,7 +71,7 @@ export default function BookingPage() {
         <Link href="/" className="flex items-center gap-2 font-black"><img src="/logo-sambas.png" alt="Lambang Kabupaten Sambas" className="w-8 h-8 rounded-xl object-contain border border-orange-100 bg-white shadow-sm" /> AntriCapil</Link>
         <Link href="/dashboard" className="text-sm font-bold text-teal-600 hover:underline">Riwayat Saya →</Link>
       </div>
-      <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 h-[64px] flex items-center justify-between">
         <Link href="/" className="text-sm text-zinc-600 hover:text-zinc-900 font-medium">← Beranda</Link>
         <span className="text-xs bg-white border border-orange-100 px-3 py-1 rounded-full font-bold text-zinc-500">Booking wajib login</span>
       </div>
@@ -57,7 +79,6 @@ export default function BookingPage() {
         <div className="bg-white rounded-[20px] border border-orange-100 p-8 shadow-sm">
           <h1 className="text-2xl font-black tracking-tight">Booking Antrean</h1>
           <p className="text-sm font-medium text-zinc-600 mt-1">Hanya untuk warga terdaftar. Data NIK & email diambil dari akun kamu.</p>
-
           <div className="mt-4 bg-teal-50 border border-teal-200 rounded-xl px-4 py-3 flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-teal-700 uppercase tracking-widest">Akun warga</p>
@@ -66,9 +87,7 @@ export default function BookingPage() {
             </div>
             <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" title="Login aktif" />
           </div>
-
           {error && <div className="mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}
-
           <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-zinc-900">Layanan *</span>
@@ -79,10 +98,26 @@ export default function BookingPage() {
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-zinc-900">Tanggal Kunjungan *</span>
               <input type="date" value={form.tanggal} min={tomorrow} onChange={e => setForm(s => ({ ...s, tanggal: e.target.value }))} className="bg-[#FFFBF0] border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white" required />
-              <span className="text-xs text-zinc-500">Kuota 80/hari per layanan. Pilih H+1 atau setelahnya. Tiket & QR dikirim ke email akun.</span>
             </label>
-
-            <button disabled={loading} type="submit" className="mt-2 bg-teal-600 text-white rounded-full py-3.5 font-bold hover:bg-teal-700 disabled:opacity-50 shadow-md shadow-teal-600/20">
+            <div className="mt-4">
+              {kuota ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold">
+                    {kuota.penuh ? 'Kuota penuh' : `Sisa kuota: ${kuota.sisa} dari ${kuota.jumlah}`}
+                  </span>
+                  <span
+                    className={kuota.penuh
+                      ? 'bg-red-50 border border-red-200 text-red-700 rounded-full text-xs font-bold'
+                      : 'bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-full text-xs font-bold'}
+                  >
+                    {kuota.penuh ? 'penuh' : 'tersedia'}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-zinc-500 text-xs">Memuat kuota...</span>
+              )}
+            </div>
+            <button disabled={loading || kuota?.penuh} type="submit" className="mt-2 bg-teal-600 text-white rounded-full py-3.5 font-bold hover:bg-teal-700 disabled:opacity-50 shadow-md shadow-teal-600/20">
               {loading ? 'Memproses...' : 'Dapatkan Nomor Antrean →'}
             </button>
           </form>

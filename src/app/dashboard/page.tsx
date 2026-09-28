@@ -15,6 +15,23 @@ export default function DashboardPage() {
   const [data, setData] = useState<Antrean[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cancelling, setCancelling] = useState<string | null>(null);
+
+  async function cancelBooking(id: string) {
+    if (!window.confirm("Batalkan booking ini? Kuota akan dikembalikan.")) return;
+    setCancelling(id);
+    setError("");
+    try {
+      const res = await fetch(`/api/antrean?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error || "Gagal membatalkan booking.");
+      setData((items) => items.map((item) => item.id === id ? { ...item, status: "BATAL" } : item));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal membatalkan booking.");
+    } finally {
+      setCancelling(null);
+    }
+  }
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -69,8 +86,9 @@ export default function DashboardPage() {
                   <p className="text-2xl font-black text-teal-600">{String(a.nomor).padStart(3,'0')} <span className="text-sm font-bold text-zinc-900">{a.layanan.nama}</span></p>
                   <p className="text-xs text-zinc-500 mt-1">Status: <span className={`px-2 py-0.5 rounded-full font-bold text-[11px] ${a.status==='MENUNGGU'?'bg-amber-100 text-amber-700':a.status==='DIPANGGIL'?'bg-teal-100 text-teal-700':a.status==='SELESAI'?'bg-emerald-100 text-emerald-700':'bg-zinc-100 text-zinc-600'}`}>{a.status}</span></p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Link href={`/tiket/${a.id}`} className="bg-zinc-900 text-white px-5 py-2.5 rounded-full text-sm font-bold">Lihat Tiket</Link>
+                  {a.status === "MENUNGGU" && <button type="button" disabled={cancelling === a.id} onClick={() => void cancelBooking(a.id)} className="bg-red-50 border border-red-200 text-red-600 px-5 py-2.5 rounded-full text-sm font-bold hover:bg-red-100 disabled:opacity-50">{cancelling === a.id ? "Membatalkan..." : "Batalkan"}</button>}
                 </div>
               </div>
             ))}

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import prisma from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { sendBookingEmail } from "@/lib/email";
 import { generateQR } from "@/lib/qr";
 import { toClientErrorMessage } from "@/lib/client-error";
+import { appUrl } from "@/lib/app-url";
 
 export async function POST(req: Request) {
   try {
@@ -54,6 +56,7 @@ export async function POST(req: Request) {
       select: { nomor: true },
     });
     const nomor = (last?.nomor ?? 0) + 1;
+    const qrToken = randomUUID().replace(/-/g, "").slice(0, 12);
 
     const antrean = await prisma.antrean.create({
       data: {
@@ -63,6 +66,7 @@ export async function POST(req: Request) {
         layananId: layanan.id,
         userId: user.id,
         wargaId: null,
+        qrToken,
       },
       include: { layanan: true },
     });
@@ -72,7 +76,8 @@ export async function POST(req: Request) {
     // Email via Resend (non-blocking)
     const targetEmail = user.email;
     if (targetEmail) {
-      const qrCode = await generateQR(`${process.env.NEXTAUTH_URL || "https://antri-capil.vercel.app"}/tiket/${antrean.id}`);
+      const qrUrl = appUrl(`verifikasi/${qrToken}`);
+      const qrCode = await generateQR(qrUrl);
       sendBookingEmail(targetEmail, {
         nomor,
         layananKode: layanan.kode as string,

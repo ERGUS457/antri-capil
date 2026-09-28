@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     let finalRole: "WARGA" | "ADMIN" = "WARGA"
     if (role === "ADMIN") {
       return NextResponse.json(
-        { error: "Pendaftaran mandiri tidak dapat membuat akun admin. Hubungi_operator_disdukcapil." },
+        { error: "Pendaftaran mandiri tidak dapat membuat akun admin. Hubungi operator Disdukcapil." },
         { status: 403 }
       )
     }

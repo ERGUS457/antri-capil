@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { ANTREAN_SELECT } from "@/lib/antrean-select";
+import { ANTREAN_SELECT, ANTREAN_PUBLIC_SELECT, canViewIdentity } from "@/lib/antrean-select";
+import { toClientErrorMessage } from "@/lib/client-error";
 
 export async function GET(req: Request) {
   try {
@@ -14,31 +15,52 @@ export async function GET(req: Request) {
     const id = searchParams.get("id");
 
     if (id) {
+      // The ticket page is public by design (the QR in the email is the whole point), so an
+      // anonymous caller still gets the record — but only the PUBLIC projection. Identity
+      // (name / NIK / email) is released only to the ticket's owner or an ADMIN. Previously any
+      // holder of a ticket cuid could read a citizen's NIK and email (2026-09-28 audit).
+      const viewer = {
+        id: ((session?.user as any)?.id as string | undefined) ?? null,
+        role: ((session?.user as any)?.role as string | undefined) ?? null,
+      };
       const item = await prisma.antrean.findUnique({
+        where: { id },
+        select: { ...ANTREAN_PUBLIC_SELECT, userId: true, wargaId: true },
+      });
+      if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+      if (!canViewIdentity(item, viewer)) {
+        const { userId: _u, wargaId: _w, ...pub } = item;
+        return NextResponse.json(pub);
+      }
+
+      const full = await prisma.antrean.findUnique({
         where: { id },
         // Explicit field list (see lib/antrean-select.ts): `include: { user: true }` would also
         // serialise User.password, publishing every citizen's bcrypt hash to the public.
         select: ANTREAN_SELECT,
       });
-      if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      return NextResponse.json(item);
+      return NextResponse.json(full);
     }
 
     const where: any = {};
 
-    // Hanya batasi ke userId jika request dari WARGA yang login DAN tanpa filter tanggal/status publik
-    // Untuk display publik (tanpa session) atau admin, tampilkan semua
     const role = (session?.user as any)?.role;
     const userId = (session?.user as any)?.id;
-    // Jika WARGA login dan akses /dashboard (tanpa tanggal) -> filter miliknya
-    // Jika ada param tanggal+status (admin/display) -> jangan filter by user
-    const isPublicDisplay = !session;
-    const isFilteredQuery = tanggal || status || layananId || layananKode;
 
-    if (role === "WARGA" && userId && !isFilteredQuery) {
-      where.userId = userId;
+    // The public TV display legitimately reads the whole queue by date/status, but it only ever
+    // needs numbers — never identities. So identity is gated on the VIEWER, not on the query
+    // shape: a WARGA is always confined to their own rows, an ADMIN sees everything, and an
+    // anonymous caller gets the public projection for every row. Previously adding `?status=`
+    // to the URL was enough to drop the userId filter and read every citizen's name and NIK
+    // (2026-09-28 audit).
+    const viewer = { id: (userId as string | undefined) ?? null, role: (role as string | undefined) ?? null };
+    const maySeeIdentity = viewer.role === "ADMIN";
+    const isOwnScope = viewer.role === "WARGA" && !!viewer.id;
+
+    if (isOwnScope) {
+      where.userId = viewer.id;
     }
-    // Admin & public display: no userId filter
 
     if (tanggal) {
       const d = new Date(tanggal);
@@ -58,13 +80,16 @@ export async function GET(req: Request) {
     // Explicit field list, never `include: { user: true }` — see lib/antrean-select.ts.
     const antrean = await prisma.antrean.findMany({
       where,
-      select: ANTREAN_SELECT,
+      select: maySeeIdentity ? ANTREAN_SELECT : ANTREAN_PUBLIC_SELECT,
       orderBy: [{ tanggal: "asc" }, { nomor: "asc" }],
       take: 200,
     });
     return NextResponse.json({ antrean });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    // Log the real failure server-side; return a generic text so Prisma/Node internals, schema
+    // names and server paths are not echoed to the caller (lib/client-error.ts).
+    console.error("GET /api/antrean error", e);
+    return NextResponse.json({ error: toClientErrorMessage(e) }, { status: 500 });
   }
 }
 
@@ -91,6 +116,7 @@ export async function PATCH(req: Request) {
     });
     return NextResponse.json(updated);
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("PATCH /api/antrean error", e);
+    return NextResponse.json({ error: toClientErrorMessage(e) }, { status: 500 });
   }
 }

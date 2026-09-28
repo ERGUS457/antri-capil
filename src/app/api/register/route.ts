@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/db"
+import { toClientErrorMessage } from "@/lib/client-error"
 
 export async function POST(req: Request) {
   try {
@@ -64,7 +65,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ user }, { status: 201 })
   } catch (e: any) {
-    console.error("POST /api/register error", e)
-    return NextResponse.json({ error: e.message || "Internal error" }, { status: 500 })
+    console.error("POST /api/register error", e);
+    return NextResponse.json({ error: toClientErrorMessage(e) }, { status: 500 });
   }
 }

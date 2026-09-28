@@ -3,6 +3,7 @@ import prisma from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { sendBookingEmail } from "@/lib/email";
 import { generateQR } from "@/lib/qr";
+import { toClientErrorMessage } from "@/lib/client-error";
 
 export async function POST(req: Request) {
   try {
@@ -84,6 +85,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ id: antrean.id, nomor, emailSent: !!targetEmail }, { status: 201 });
   } catch (e: any) {
     console.error("POST /api/booking error", e);
-    return NextResponse.json({ error: e.message ?? "Internal error" }, { status: 500 });
+    return NextResponse.json({ error: toClientErrorMessage(e) }, { status: 500 });
   }
 }

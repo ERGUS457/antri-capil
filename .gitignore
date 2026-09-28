@@ -48,3 +48,6 @@ docs/
 !.env.example
 .hermes-tmp.*/
 .hermes-tmp/
+
+# scratch / audit artifacts (OpenCode prompts, probe output)
+cache/

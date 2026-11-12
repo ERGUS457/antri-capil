@@ -20,6 +20,7 @@ export const ANTREAN_SELECT = {
   nomor: true,
   tanggal: true,
   status: true,
+  nomorLoket: true,
   waktuPanggil: true,
   waktuSelesai: true,
   createdAt: true,
@@ -40,6 +41,7 @@ export const ANTREAN_SELECT = {
       name: true,
       email: true,
       nik: true,
+      phone: true,
     },
   },
   warga: {
@@ -47,6 +49,7 @@ export const ANTREAN_SELECT = {
       id: true,
       nama: true,
       nik: true,
+      telepon: true,
       email: true,
     },
   },
@@ -64,6 +67,7 @@ export const ANTREAN_PUBLIC_SELECT = {
   nomor: true,
   tanggal: true,
   status: true,
+  nomorLoket: true,
   waktuPanggil: true,
   layanan: {
     select: {

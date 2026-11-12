@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Booking, Dashboard, Admin wajib login.
-// Booking: warga harus daftar/login dulu → data tersimpan, mudah dipantau.
+// Dashboard, Admin, Profile wajib login.
+// Booking antrean sekarang mendukung Fast-Track (warga bisa langsung booking tanpa wajib login/password).
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const pathname = url.pathname;
   const needsAuth =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/admin") ||
-    pathname.startsWith("/booking") ||
     pathname.startsWith("/profile");
 
   if (!needsAuth) return NextResponse.next();
@@ -21,7 +20,6 @@ export function middleware(req: NextRequest) {
     "";
 
   if (!token) {
-    // simpan tujuan biar balik ke /booking setelah login
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
@@ -30,5 +28,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/booking", "/profile"],
+  matcher: ["/admin/:path*", "/dashboard/:path*", "/profile"],
 };

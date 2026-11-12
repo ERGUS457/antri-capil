@@ -13,34 +13,109 @@ export async function GET(req: Request) {
     const layananKode = searchParams.get("layananKode");
     const status = searchParams.get("status");
     const id = searchParams.get("id");
+    const nik = searchParams.get("nik");
+
+    // Fast-Track Tracking by NIK
+    if (nik) {
+      const cleanNik = nik.replace(/\D/g, "");
+      if (cleanNik.length === 16) {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+        const records = await prisma.antrean.findMany({
+          where: {
+            OR: [
+              { user: { nik: cleanNik } },
+              { warga: { nik: cleanNik } },
+            ],
+            tanggal: { gte: today },
+            status: { in: ["MENUNGGU", "DIPANGGIL", "SELESAI"] },
+          },
+          include: {
+            layanan: true,
+            warga: { select: { nama: true, nik: true } },
+            user: { select: { name: true, nik: true } },
+          },
+          orderBy: [{ tanggal: "asc" }, { nomor: "asc" }],
+          take: 10,
+        });
+
+        const tickets = records.map((t) => ({
+          id: t.id,
+          nomor: t.nomor,
+          tanggal: t.tanggal,
+          status: t.status,
+          nomorLoket: t.nomorLoket,
+          layanan: t.layanan,
+          nama: t.user?.name || t.warga?.nama || "Warga",
+          maskedNik: cleanNik.slice(0, 4) + "********" + cleanNik.slice(-4),
+        }));
+
+        return NextResponse.json({ tickets });
+      }
+      return NextResponse.json({ error: "NIK harus 16 digit angka" }, { status: 400 });
+    }
 
     if (id) {
-      // The ticket page is public by design (the QR in the email is the whole point), so an
-      // anonymous caller still gets the record — but only the PUBLIC projection. Identity
-      // (name / NIK / email) is released only to the ticket's owner or an ADMIN. Previously any
-      // holder of a ticket cuid could read a citizen's NIK and email (2026-09-28 audit).
       const viewer = {
         id: ((session?.user as any)?.id as string | undefined) ?? null,
         role: ((session?.user as any)?.role as string | undefined) ?? null,
       };
       const item = await prisma.antrean.findUnique({
         where: { id },
-        select: { ...ANTREAN_PUBLIC_SELECT, userId: true, wargaId: true },
+        include: {
+          layanan: true,
+          warga: { select: { id: true, nama: true, nik: true, telepon: true, email: true } },
+          user: { select: { id: true, name: true, nik: true, phone: true, email: true } },
+        },
       });
-      if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
+      if (!item) return NextResponse.json({ error: "Tiket tidak ditemukan" }, { status: 404 });
 
-      if (!canViewIdentity(item, viewer)) {
-        const { userId: _u, wargaId: _w, ...pub } = item;
-        return NextResponse.json(pub);
+      // Hitung sisa antrean yang menunggu di depan tiket ini
+      const antreanDiDepan = await prisma.antrean.count({
+        where: {
+          layananId: item.layananId,
+          tanggal: item.tanggal,
+          nomor: { lt: item.nomor },
+          status: { in: ["MENUNGGU", "DIPANGGIL"] },
+        },
+      });
+
+      const rawNik = item.user?.nik || item.warga?.nik;
+      const maskedNik = rawNik ? (rawNik.slice(0, 4) + "********" + rawNik.slice(-4)) : null;
+      const citizenName = item.user?.name || item.warga?.nama || "Warga Sambas";
+
+      // Jika viewer adalah pemilik akun atau admin, kirim identitas penuh
+      const isOwnerOrAdmin = canViewIdentity(
+        { userId: item.userId, wargaId: item.wargaId },
+        viewer
+      );
+
+      if (isOwnerOrAdmin) {
+        return NextResponse.json({
+          ...item,
+          antreanDiDepan,
+        });
       }
 
-      const full = await prisma.antrean.findUnique({
-        where: { id },
-        // Explicit field list (see lib/antrean-select.ts): `include: { user: true }` would also
-        // serialise User.password, publishing every citizen's bcrypt hash to the public.
-        select: ANTREAN_SELECT,
+      // Untuk tamu yang memegang link/QR tiket langsung: berikan data tiket + masked NIK aman
+      return NextResponse.json({
+        id: item.id,
+        nomor: item.nomor,
+        tanggal: item.tanggal,
+        status: item.status,
+        nomorLoket: item.nomorLoket,
+        waktuPanggil: item.waktuPanggil,
+        layanan: item.layanan,
+        warga: {
+          nama: citizenName,
+          nik: maskedNik,
+        },
+        user: {
+          name: citizenName,
+          nik: maskedNik,
+        },
+        antreanDiDepan,
       });
-      return NextResponse.json(full);
     }
 
     const where: any = {};
@@ -97,11 +172,15 @@ export async function PATCH(req: Request) {
   try {
     const session = await auth();
     if ((session?.user as any)?.role !== 'ADMIN') return NextResponse.json({ error: "Admin only" }, { status: 403 });
-    const { id, action } = await req.json() as { id?: string; action?: string };
+    const { id, action, nomorLoket } = await req.json() as { id?: string; action?: string; nomorLoket?: number };
     if (!id || !action) return NextResponse.json({ error: "id dan action wajib" }, { status: 400 });
 
     const map: Record<string, any> = {
-      PANGGIL: { status: "DIPANGGIL", waktuPanggil: new Date() },
+      PANGGIL: {
+        status: "DIPANGGIL",
+        waktuPanggil: new Date(),
+        ...(nomorLoket ? { nomorLoket: Number(nomorLoket) } : {}),
+      },
       SELESAI: { status: "SELESAI", waktuSelesai: new Date() },
       LEWATI: { status: "LEWATI", waktuLewati: new Date() },
       BATAL: { status: "BATAL" },

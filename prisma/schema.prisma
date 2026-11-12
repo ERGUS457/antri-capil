@@ -18,11 +18,14 @@ model Layanan {
 }
 
 model Warga {
-  id      String    @id @default(cuid())
-  nik     String    @unique
-  nama    String
-  email   String?
-  antrean Antrean[]
+  id        String    @id @default(cuid())
+  nik       String    @unique
+  nama      String
+  telepon   String?
+  email     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  antrean   Antrean[]
 }
 
 model User {
@@ -48,6 +51,7 @@ model Antrean {
   waktuPanggil DateTime?
   waktuSelesai DateTime?
   waktuLewati  DateTime?
+  nomorLoket   Int?
   wargaId      String?
   layananId    String
   createdAt    DateTime      @default(now())

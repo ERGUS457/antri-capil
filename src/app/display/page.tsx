@@ -246,11 +246,11 @@ export default function DisplayPage() {
   const primaryCall = activeList.length > 0 ? activeList[activeList.length - 1] : null;
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#0A192F] text-white font-sans flex flex-col justify-between selection:bg-[#D4AF37]/30">
+    <div className="h-screen max-h-screen w-full max-w-full overflow-hidden bg-[#0A192F] text-white font-sans flex flex-col justify-between selection:bg-[#D4AF37]/30">
       {/* ========================================================= */}
       {/* HEADER BAR: Identitas Resmi Disdukcapil Sambas & Jam Digital */}
       {/* ========================================================= */}
-      <header className="w-full bg-[#0F264A] border-b border-[#1E3A8A]/60 px-4 sm:px-8 py-3.5 sm:py-4 shadow-xl z-20">
+      <header className="w-full bg-[#0F264A] border-b border-[#1E3A8A]/60 px-4 sm:px-8 py-3 sm:py-3.5 shadow-xl z-20 shrink-0">
         <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Logo & Judul Instansi */}
           <div className="flex items-center gap-3.5 sm:gap-4 shrink-0">
@@ -258,7 +258,7 @@ export default function DisplayPage() {
               <img
                 src="/logo-sambas.png"
                 alt="Lambang Kabupaten Sambas"
-                className="w-12 h-12 sm:w-14 sm:h-14 object-contain bg-white/10 p-1 rounded-xl border border-white/20 shadow-lg drop-shadow"
+                className="w-11 h-11 sm:w-13 sm:h-13 object-contain bg-white/10 p-1 rounded-xl border border-white/20 shadow-lg drop-shadow"
               />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-[#0F264A] animate-pulse" />
             </div>
@@ -303,7 +303,7 @@ export default function DisplayPage() {
               </div>
             </div>
 
-            {/* Kontrol TV (Audio, Fullscreen, Test Voice) */}
+            {/* Kontrol TV (Audio, Fullscreen, Test Voice, Tautan Cepat) */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setAudioEnabled((v) => !v)}
@@ -334,6 +334,14 @@ export default function DisplayPage() {
               >
                 {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
+
+              <Link
+                href="/"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-slate-200 transition shadow-md"
+                title="Kembali ke Beranda"
+              >
+                <Building2 className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         </div>
@@ -563,21 +571,18 @@ export default function DisplayPage() {
             </div>
           </div>
 
-          {/* Navigasi Cepat Pengawas / Petugas */}
-          <div className="bg-[#0A192F]/60 border border-white/10 rounded-2xl p-4 flex items-center justify-between text-xs text-slate-300">
-            <Link
-              href="/"
-              className="hover:text-white flex items-center gap-1 font-semibold transition"
-            >
-              <span>← Beranda</span>
-            </Link>
-            <Link
-              href="/admin"
-              className="text-[#D4AF37] hover:underline font-bold flex items-center gap-1 transition"
-            >
-              <span>Panel Petugas Loket</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
+          {/* Maklumat Pelayanan Publik Disdukcapil Sambas */}
+          <div className="bg-[#0F264A]/80 border border-[#1E3A8A] rounded-2xl p-4 flex items-center justify-between text-xs text-slate-300 shadow-md">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+              <div>
+                <p className="text-[11px] font-bold text-white">Layanan Bebas Pungutan Liar (100% GRATIS)</p>
+                <p className="text-[10px] text-slate-400">Jam Operasional: 08.00 - 15.00 WIB (Senin - Jumat)</p>
+              </div>
+            </div>
+            <span className="text-[10px] font-black uppercase bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 px-2 py-1 rounded-lg">
+              AKUNTABEL
+            </span>
           </div>
         </div>
       </main>
@@ -585,31 +590,29 @@ export default function DisplayPage() {
       {/* ========================================================= */}
       {/* FOOTER BAR: Running Text / Marquee Berita Resmi Adminduk */}
       {/* ========================================================= */}
-      <footer className="w-full bg-[#0F264A] border-t border-[#1E3A8A] py-2.5 px-4 overflow-hidden text-xs font-bold text-[#F5DEB3] shadow-lg">
-        <div className="whitespace-nowrap overflow-hidden">
-          <div className="inline-block animate-marquee uppercase tracking-wider">
-            🏛️ SELAMAT DATANG DI DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN SAMBAS •
-            SELURUH PELAYANAN DOKUMEN KEPENDUDUKAN (KTP-EL, KK, KIA, AKTA) TIDAK DIPUNGUT BIAYA (GRATIS) •
-            HINDARI CALO DAN PERANTARA • MOHON MEMBAWA DOKUMEN DAN PERSYARATAN ASLI SAAT NOMOR ANDA DIPANGGIL MENUJU LOKET •
-            PANTAU STATUS TIKET DARI SMARTPHONE ANDA DI ANTRI-CAPIL.VERCEL.APP •
-            TERIMA KASIH ATAS KETERTIBAN ANDA DI RUANG PELAYANAN KAMI.
+      <footer className="w-full bg-[#0F264A] border-t-2 border-[#D4AF37]/40 py-2.5 px-4 overflow-hidden text-xs sm:text-sm font-bold shadow-2xl flex items-center gap-3 shrink-0 z-20">
+        <div className="bg-[#D4AF37] text-[#0A192F] px-3 py-1 rounded-lg font-black text-xs uppercase tracking-wider shrink-0 flex items-center gap-1.5 shadow">
+          <span className="w-2 h-2 rounded-full bg-[#0A192F] animate-ping" />
+          <span>PENGUMUMAN RESMI</span>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="animate-ticker uppercase tracking-wider text-slate-200">
+            <span className="shrink-0 pr-12">
+              🏛️ SELAMAT DATANG DI DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN SAMBAS •
+              SELURUH PELAYANAN DOKUMEN KEPENDUDUKAN (KTP-EL, KK, KIA, AKTA) TIDAK DIPUNGUT BIAYA (100% GRATIS) •
+              HINDARI CALO DAN PERANTARA • MOHON MEMBAWA BERKAS DAN DOKUMEN ASLI SAAT NOMOR ANDA DIPANGGIL MENUJU LOKET •
+              PANTAU STATUS TIKET DARI SMARTPHONE ANDA DI ANTRI-CAPIL.VERCEL.APP •
+              TERIMA KASIH ATAS KETERTIBAN ANDA DI RUANG PELAYANAN.
+            </span>
+            <span className="shrink-0 pr-12">
+              🏛️ SELAMAT DATANG DI DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN SAMBAS •
+              SELURUH PELAYANAN DOKUMEN KEPENDUDUKAN (KTP-EL, KK, KIA, AKTA) TIDAK DIPUNGUT BIAYA (100% GRATIS) •
+              HINDARI CALO DAN PERANTARA • MOHON MEMBAWA BERKAS DAN DOKUMEN ASLI SAAT NOMOR ANDA DIPANGGIL MENUJU LOKET •
+              PANTAU STATUS TIKET DARI SMARTPHONE ANDA DI ANTRI-CAPIL.VERCEL.APP •
+              TERIMA KASIH ATAS KETERTIBAN ANDA DI RUANG PELAYANAN.
+            </span>
           </div>
         </div>
-
-        <style jsx>{`
-          @keyframes marquee {
-            0% {
-              transform: translateX(100%);
-            }
-            100% {
-              transform: translateX(-100%);
-            }
-          }
-          .animate-marquee {
-            display: inline-block;
-            animation: marquee 35s linear infinite;
-          }
-        `}</style>
       </footer>
     </div>
   );

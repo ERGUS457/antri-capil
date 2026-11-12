@@ -273,10 +273,10 @@ function AdminContent() {
       {/* ========================================================= */}
       {/* KONTEN UTAMA */}
       {/* ========================================================= */}
-      <main className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1 space-y-6">
+      <main className="max-w-7xl mx-auto w-full p-3 sm:p-5 flex-1 space-y-4">
         {/* Banner Alert Notifikasi */}
         {err && (
-          <div className="bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs px-4 py-3 rounded-2xl flex items-center justify-between shadow-lg">
+          <div className="bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs px-4 py-2.5 rounded-xl flex items-center justify-between shadow-lg">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{err}</span>
@@ -288,7 +288,7 @@ function AdminContent() {
         )}
 
         {successMsg && (
-          <div className="bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs px-4 py-3 rounded-2xl flex items-center justify-between shadow-lg animate-fade-in">
+          <div className="bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs px-4 py-2.5 rounded-xl flex items-center justify-between shadow-lg animate-fade-in">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>{successMsg}</span>
@@ -302,46 +302,46 @@ function AdminContent() {
         {/* ========================================================= */}
         {/* SECTION 1: PEMILIH LOKET AKTIF PETUGAS */}
         {/* ========================================================= */}
-        <section className="bg-[#0A192F] rounded-3xl border border-white/10 p-5 sm:p-6 shadow-xl relative overflow-hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <section className="bg-[#0A192F] rounded-2xl border border-white/10 p-3.5 sm:p-4 shadow-xl relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
             <div>
               <span className="text-[10px] font-black tracking-widest text-[#D4AF37] uppercase flex items-center gap-1.5">
                 <UserCheck className="w-3.5 h-3.5" />
                 <span>PENGATURAN POSISI MEJA KERJA PETUGAS</span>
               </span>
-              <h2 className="text-base sm:text-lg font-black text-white mt-1">
+              <h2 className="text-sm sm:text-base font-black text-white mt-0.5">
                 Pilih Loket Layanan yang Sedang Anda Jaga:
               </h2>
             </div>
-            <div className="bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-3.5 py-1.5 rounded-xl flex items-center gap-2 text-xs font-bold text-[#F5DEB3]">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-3 py-1 rounded-xl flex items-center gap-2 text-xs font-bold text-[#F5DEB3] w-fit">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>
                 Aktif di: <b>Loket 0{myLoket}</b>
               </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
             {LOKET_CONFIG.map((l) => {
               const active = myLoket === l.id;
               return (
                 <button
                   key={l.id}
                   onClick={() => setMyLoket(l.id)}
-                  className={`p-3.5 rounded-2xl border text-left transition relative overflow-hidden ${
+                  className={`p-2.5 sm:p-3 rounded-xl border text-left transition relative overflow-hidden ${
                     active
-                      ? 'bg-gradient-to-br from-[#1E3A8A] to-[#0F264A] border-[#D4AF37] ring-2 ring-[#D4AF37]/50 shadow-lg'
+                      ? 'bg-gradient-to-br from-[#1E3A8A] to-[#0F264A] border-[#D4AF37] ring-2 ring-[#D4AF37]/50 shadow-md'
                       : 'bg-white/5 border-white/10 hover:bg-white/10'
                   }`}
                 >
                   {active && (
                     <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#D4AF37] ring-4 ring-[#D4AF37]/20" />
                   )}
-                  <p className={`text-xs font-black uppercase ${active ? 'text-[#D4AF37]' : 'text-slate-400'}`}>
+                  <p className={`text-[11px] font-black uppercase ${active ? 'text-[#D4AF37]' : 'text-slate-400'}`}>
                     {l.label}
                   </p>
-                  <p className="text-sm font-black text-white mt-0.5">{l.title}</p>
-                  <p className="text-[10px] text-slate-300 mt-1 truncate">{l.desc}</p>
+                  <p className="text-xs sm:text-sm font-black text-white mt-0.5">{l.title}</p>
+                  <p className="text-[10px] text-slate-300 mt-0.5 leading-snug">{l.desc}</p>
                 </button>
               );
             })}
@@ -351,36 +351,36 @@ function AdminContent() {
         {/* ========================================================= */}
         {/* SECTION 2: STATISTIK COUNTER CEPAT */}
         {/* ========================================================= */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-[#0A192F] rounded-2xl border border-white/10 p-4 shadow-lg">
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+          <div className="bg-[#0A192F] rounded-xl border border-white/10 p-3 shadow-md">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Antrean</span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl sm:text-3xl font-black text-white">{stats.total}</span>
-              <span className="text-xs text-slate-400 font-medium">tiket</span>
+            <div className="flex items-baseline justify-between mt-0.5">
+              <span className="text-xl sm:text-2xl font-black text-white">{stats.total}</span>
+              <span className="text-[11px] text-slate-400 font-medium">tiket</span>
             </div>
           </div>
 
-          <div className="bg-[#0A192F] rounded-2xl border border-amber-500/30 p-4 shadow-lg bg-amber-500/5">
+          <div className="bg-[#0A192F] rounded-xl border border-amber-500/30 p-3 shadow-md bg-amber-500/5">
             <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Menunggu</span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl sm:text-3xl font-black text-amber-300">{stats.menunggu}</span>
-              <span className="text-xs text-amber-400/80 font-medium">di ruang tunggu</span>
+            <div className="flex items-baseline justify-between mt-0.5">
+              <span className="text-xl sm:text-2xl font-black text-amber-300">{stats.menunggu}</span>
+              <span className="text-[11px] text-amber-400/80 font-medium">di ruang tunggu</span>
             </div>
           </div>
 
-          <div className="bg-[#0A192F] rounded-2xl border border-blue-500/30 p-4 shadow-lg bg-blue-500/5">
+          <div className="bg-[#0A192F] rounded-xl border border-blue-500/30 p-3 shadow-md bg-blue-500/5">
             <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider block">Sedang Dipanggil</span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl sm:text-3xl font-black text-blue-300">{stats.dipanggil}</span>
-              <span className="text-xs text-blue-400/80 font-medium">di loket</span>
+            <div className="flex items-baseline justify-between mt-0.5">
+              <span className="text-xl sm:text-2xl font-black text-blue-300">{stats.dipanggil}</span>
+              <span className="text-[11px] text-blue-400/80 font-medium">di loket</span>
             </div>
           </div>
 
-          <div className="bg-[#0A192F] rounded-2xl border border-emerald-500/30 p-4 shadow-lg bg-emerald-500/5">
+          <div className="bg-[#0A192F] rounded-xl border border-emerald-500/30 p-3 shadow-md bg-emerald-500/5">
             <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Selesai Dilayani</span>
-            <div className="flex items-baseline justify-between mt-1">
-              <span className="text-2xl sm:text-3xl font-black text-emerald-300">{stats.selesai}</span>
-              <span className="text-xs text-emerald-400/80 font-medium">terlayani</span>
+            <div className="flex items-baseline justify-between mt-0.5">
+              <span className="text-xl sm:text-2xl font-black text-emerald-300">{stats.selesai}</span>
+              <span className="text-[11px] text-emerald-400/80 font-medium">terlayani</span>
             </div>
           </div>
         </section>

@@ -125,7 +125,7 @@ export default function TiketPage() {
   const shareText = `Halo! Ini nomor antrean resmi Disdukcapil Sambas saya: *${kodeNomor}* (${tiket.layanan.nama}) untuk tanggal ${tglFormatted}. Cek status tiket di: ${typeof window !== 'undefined' ? window.location.href : ''}`;
 
   return (
-    <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans pb-16 print:bg-white print:p-0">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-100/70 text-slate-900 font-sans pb-16 print:bg-white print:p-0">
       <div className="print:hidden">
         <Navbar />
       </div>

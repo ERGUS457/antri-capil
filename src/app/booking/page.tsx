@@ -430,7 +430,7 @@ function BookingForm() {
 
 export default function BookingPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-900 font-sans">
       <Navbar />
       <Suspense fallback={<div className="p-12 text-center text-slate-500">Memuat formulir...</div>}>
         <BookingForm />

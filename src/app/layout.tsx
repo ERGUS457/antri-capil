@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -13,19 +13,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: "AntriCapil — Antrean Online Disdukcapil Kab. Sambas",
-  description: "Booking antrean online KTP, KK, KIA, Pindah & Akta di Disdukcapil Kabupaten Sambas. Daftar akun, dapat nomor + QR, pantau progres.",
+  title: "ANTRI-CAPIL — Pelayanan Adminduk Disdukcapil Kab. Sambas",
+  description: "Sistem Antrean Digital Disdukcapil Kabupaten Sambas. Ambil tiket online instan dengan NIK tanpa wajib password, dapatkan Smart Ticket QR, dan pantau status panggilan dari HP.",
   icons: { icon: "/logo-sambas.png" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col w-full max-w-full overflow-x-hidden">
         <Providers>{children}</Providers>
       </body>
     </html>

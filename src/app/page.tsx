@@ -69,29 +69,29 @@ const layanan = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-[#D4AF37]/30 selection:text-[#0A192F]">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-900 font-sans selection:bg-[#D4AF37]/30 selection:text-[#0A192F]">
       <Navbar />
 
       {/* HERO SECTION — Modern Gov-Tech with Royal Navy & Gold */}
-      <section className="relative bg-gradient-to-b from-[#0A192F] via-[#0F264A] to-[#0A192F] text-white pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden border-b border-[#1E293B]">
+      <section className="relative w-full bg-gradient-to-b from-[#0A192F] via-[#0F264A] to-[#0A192F] text-white pt-8 pb-14 sm:pt-16 sm:pb-24 overflow-hidden border-b border-[#1E293B]">
         {/* Ambient background glows */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-10 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 sm:right-10 w-60 sm:w-80 h-60 sm:h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column: Headlines & Fast Track Booking */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-5 sm:space-y-6">
               {/* Badge Lembaga */}
-              <div className="inline-flex items-center gap-2.5 bg-white/10 border border-white/15 text-slate-200 px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md shadow-sm">
+              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-slate-200 px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md shadow-sm">
                 <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
                 <span className="text-[#D4AF37] font-bold">Layanan Resmi</span>
                 <span className="text-white/40">•</span>
-                <span>Disdukcapil Kabupaten Sambas</span>
+                <span className="truncate">Disdukcapil Kabupaten Sambas</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-black tracking-tight leading-[1.1] text-white">
+              <h1 className="text-2xl sm:text-4xl lg:text-[52px] font-black tracking-tight leading-[1.15] text-white break-words">
                 Sistem Antrean Digital <br className="hidden sm:block" />
                 Pelayanan Adminduk <br className="hidden sm:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#F3C350] to-[#FFF0B3]">
@@ -100,26 +100,26 @@ export default function Home() {
               </h1>
 
               {/* Description */}
-              <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl font-normal">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed max-w-2xl font-normal">
                 Pilih layanan kependudukan Anda, masukkan identitas pemohon, dan dapatkan 
                 <span className="text-white font-semibold"> Smart Ticket QR</span> seketika. Pantau panggilan 
                 langsung dari smartphone tanpa antre menumpuk di kantor dinas.
               </p>
 
               {/* Fast Action CTA Buttons */}
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <Link
                   href="/booking"
-                  className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#D4AF37] via-[#E5BA42] to-[#D4AF37] text-[#0A192F] px-7 py-4 rounded-xl font-extrabold text-base shadow-xl shadow-[#D4AF37]/20 hover:brightness-110 active:scale-[0.98] transition-all group"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#D4AF37] via-[#E5BA42] to-[#D4AF37] text-[#0A192F] px-6 py-3.5 sm:py-4 rounded-xl font-extrabold text-sm sm:text-base shadow-xl shadow-[#D4AF37]/20 hover:brightness-110 active:scale-[0.98] transition-all group"
                 >
-                  <Sparkles className="w-5 h-5 text-[#0A192F]" />
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#0A192F]" />
                   <span>Ambil Tiket Antrean (Instan)</span>
                   <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
 
                 <Link
                   href="/tracking"
-                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 px-6 py-4 rounded-xl font-bold text-sm backdrop-blur-md transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 px-5 py-3.5 sm:py-4 rounded-xl font-bold text-sm backdrop-blur-md transition-all"
                 >
                   <Search className="w-4 h-4 text-[#D4AF37]" />
                   <span>Cek Tiket via NIK</span>
@@ -127,7 +127,7 @@ export default function Home() {
               </div>
 
               {/* Trust Indicators */}
-              <div className="pt-4 grid grid-cols-3 gap-3 border-t border-white/10 text-xs">
+              <div className="pt-4 flex flex-wrap sm:grid sm:grid-cols-3 gap-2.5 sm:gap-3 border-t border-white/10 text-xs">
                 <div className="flex items-center gap-2 text-slate-300">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Tanpa Wajib Password</span>

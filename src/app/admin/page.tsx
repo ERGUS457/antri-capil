@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 type Antrean = {
   id: string; nomor: number; tanggal: string; status: string;
+  nomorLoket?: number | null;
   warga: { nama: string; nik: string } | null;
   user: { name: string; email: string; nik: string | null } | null;
   layanan: { nama: string; kode: string };
@@ -19,6 +20,7 @@ function AdminContent() {
 
   const [data, setData] = useState<Antrean[]>([]);
   const [filter, setFilter] = useState({ tanggal: '', status: '' });
+  const [myLoket, setMyLoket] = useState<number>(1);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
 
@@ -45,13 +47,17 @@ function AdminContent() {
     return () => clearInterval(iv);
   }, [isAdmin, fetchAntrean]);
 
-  async function patch(id: string, action: string) {
+  async function patch(id: string, action: string, loket?: number) {
     setLoading(true);
     try {
+      const bodyPayload: any = { id, action };
+      if (action === 'PANGGIL') {
+        bodyPayload.nomorLoket = loket || myLoket;
+      }
       const res = await fetch('/api/antrean', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, action }),
+        body: JSON.stringify(bodyPayload),
       });
       const d = await res.json();
       if (!res.ok) setErr(d.error || 'Gagal update');
@@ -105,6 +111,14 @@ function AdminContent() {
         {err && <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl mb-4">{err}</div>}
 
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 flex flex-wrap gap-4 items-end shadow-sm">
+          <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Pilih Loket Anda</span>
+            <select value={myLoket} onChange={e => setMyLoket(Number(e.target.value))} className="border-2 border-teal-600 bg-teal-50/50 text-teal-900 font-bold rounded-lg px-3 py-2 text-sm focus:bg-white">
+              <option value={1}>Loket 01 (KTP-el)</option>
+              <option value={2}>Loket 02 (KTP-el & IKD)</option>
+              <option value={3}>Loket 03 (KK & Pindah)</option>
+              <option value={4}>Loket 04 (Akta & KIA)</option>
+            </select>
+          </label>
           <label className="flex flex-col gap-1.5"><span className="text-xs font-bold text-gray-500 uppercase">Tanggal</span>
             <div className="flex gap-2 items-center">
               <input type="date" value={filter.tanggal} onChange={e => setFilter(s => ({ ...s, tanggal: e.target.value }))} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-[#FFFBF0] focus:bg-white" />
@@ -127,13 +141,33 @@ function AdminContent() {
             <tbody className="divide-y divide-gray-100">
               {data.length === 0 ? <tr><td colSpan={5} className="px-6 py-20 text-center text-gray-400">Tidak ada antrean untuk filter ini</td></tr> : data.map(a => (
                 <tr key={a.id} className="hover:bg-[#FFFBF0]/50 transition">
-                  <td className="px-6 py-4 font-bold text-lg text-blue-600">{String(a.nomor).padStart(3, '0')}</td>
+                  <td className="px-6 py-4 font-bold text-lg text-blue-600">
+                    <div>{String(a.nomor).padStart(3, '0')}</div>
+                    {a.nomorLoket && (
+                      <span className="inline-block text-[10px] font-black uppercase bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded mt-1">
+                        Loket {a.nomorLoket}
+                      </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4"><div><p className="font-bold text-gray-900">{a.layanan.kode}</p><p className="text-xs text-gray-500">{a.layanan.nama}</p></div></td>
                   <td className="px-6 py-4"><div><p className="font-semibold text-gray-900">{a.user?.name || a.warga?.nama || '-'}</p><p className="text-xs text-gray-500">{a.user?.nik || a.warga?.nik || ''} • {a.user?.email || ''}</p></div></td>
                   <td className="px-6 py-4"><span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${a.status === 'DIPANGGIL' ? 'bg-teal-100 text-teal-700' : a.status === 'MENUNGGU' ? 'bg-amber-100 text-amber-700' : a.status === 'SELESAI' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{a.status}</span></td>
-                  <td className="px-6 py-4"><div className="flex gap-2">
-                    {a.status === 'MENUNGGU' && <button disabled={loading} onClick={() => patch(a.id, 'PANGGIL')} className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-teal-700 disabled:opacity-50">Panggil</button>}
-                    {a.status === 'DIPANGGIL' && <button disabled={loading} onClick={() => patch(a.id, 'SELESAI')} className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-700 disabled:opacity-50">Selesai</button>}
+                  <td className="px-6 py-4"><div className="flex flex-wrap gap-2">
+                    {a.status === 'MENUNGGU' && (
+                      <button disabled={loading} onClick={() => patch(a.id, 'PANGGIL', myLoket)} className="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-teal-700 disabled:opacity-50 shadow-sm">
+                        Panggil (Loket {myLoket})
+                      </button>
+                    )}
+                    {a.status === 'DIPANGGIL' && (
+                      <>
+                        <button disabled={loading} onClick={() => patch(a.id, 'PANGGIL', a.nomorLoket || myLoket)} className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50 shadow-sm flex items-center gap-1">
+                          📢 Panggil Ulang
+                        </button>
+                        <button disabled={loading} onClick={() => patch(a.id, 'SELESAI')} className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-700 disabled:opacity-50 shadow-sm">
+                          Selesai
+                        </button>
+                      </>
+                    )}
                     {(a.status === 'MENUNGGU' || a.status === 'DIPANGGIL') && <button disabled={loading} onClick={() => patch(a.id, 'LEWATI')} className="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-200 disabled:opacity-50">Lewati</button>}
                     {(a.status === 'MENUNGGU' || a.status === 'DIPANGGIL') && <button disabled={loading} onClick={() => patch(a.id, 'BATAL')} className="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 disabled:opacity-50">Batal</button>}
                   </div></td>
